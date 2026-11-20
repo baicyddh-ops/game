@@ -223,7 +223,7 @@ function tick(){if(mkStep()){save();if((tab==2||tab==0)&&!$("ov").classList.cont
 document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest(".zoom .card");if(!c)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(700px) rotateY(${x*20}deg) rotateX(${-y*20}deg)`});
 document.addEventListener("pointerout",e=>{const c=e.target.closest&&e.target.closest(".zoom .card");if(c)c.style.transform=""});
 const away=S.plots.filter(pl=>{adv(pl,Date.now());return kind(pl)=="r"}).length;
-const FB_URL="https://sadchudes-4af90-default-rtdb.firebaseio.com";let FBU=(FB_URL||localStorage.getItem("fbu")||"").replace(/\/$/,""),DB=0,OF=[],trg=null,trw="";
+const FB_URL="https://sadchudes2-default-rtdb.firebaseio.com";let FBU=(FB_URL||localStorage.getItem("fbu")||"").replace(/\/$/,""),DB=0,OF=[],trg=null,trw="";
 if(!S.uid){S.uid="u"+Math.random().toString(36).slice(2,10);save()}const ME=S.uid;
 const api=(p,m,b)=>fetch(FBU+"/"+p+".json",{method:m||"GET",body:b?JSON.stringify(b):undefined}).then(r=>{if(!r.ok)throw 0;return r.json()});
 async function pull(){if(!FBU)return;try{const d=await api("offers")||{};OF=Object.keys(d).map(id=>({id,...d[id]}));if(S.code){try{IB=await api("inbox/"+S.code)||{}}catch(e){}}const w=DB;DB=1;if(!w&&tab==6)setTimeout(render,0);reg();settle();const x=document.activeElement;if(tab==5&&!$("ov").classList.contains("on")&&!(x&&x.tagName=="INPUT"))render()}catch(e){if(DB){DB=0;if(tab==5||tab==6)render()}}}
