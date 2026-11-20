@@ -1,0 +1,310 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Сад Чудес</title>
+<style>
+:root{--bg1:#22405a;--bg2:#0e1b26;--panel:#ffffff16;--text:#f3f7ff;--mut:#a5b8cb;--gold:#ffd54a;--brd:#ffffff2e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg1:#e6f7ea;--bg2:#bfe3cc;--panel:#ffffffb8;--text:#173023;--mut:#47665a;--brd:#00000024;color-scheme:light}}
+:root[data-theme="light"]{--bg1:#e6f7ea;--bg2:#bfe3cc;--panel:#ffffffb8;--text:#173023;--mut:#47665a;--brd:#00000024}
+:root[data-theme="dark"]{--bg1:#22405a;--bg2:#0e1b26;--panel:#ffffff16;--text:#f3f7ff;--mut:#a5b8cb;--brd:#ffffff2e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 20% 0,var(--bg1),var(--bg2)) fixed;padding-bottom:84px;user-select:none;-webkit-user-select:none}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg1)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;backdrop-filter:blur(10px);background:var(--panel);border-bottom:1px solid var(--brd)}
+h1{font-size:18px;margin:0}.money{font-weight:800;color:var(--gold);font-size:20px}
+main{max-width:560px;margin:0 auto;padding:14px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:6px;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));background:var(--panel);backdrop-filter:blur(14px);border-top:1px solid var(--brd);z-index:6}
+nav button{flex:1;max-width:130px;border:0;border-radius:14px;padding:9px 4px;background:transparent;color:var(--mut);font-size:12px}
+nav button b{display:block;font-size:20px}nav button.on{background:#7cfc9a30;color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.plot{aspect-ratio:1;border-radius:20px;border:2px dashed var(--brd);background:linear-gradient(160deg,#8b5a2b66,#4b2e1266);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;overflow:hidden;font-size:11px;color:var(--mut);text-align:center;line-height:1.25;transition:transform .1s}
+.plot:active{transform:scale(.96)}
+.plot.g{border-style:solid}
+.plot.ripe{border:2px solid var(--gold);color:var(--text);animation:glow 1.2s infinite alternate}.plot.ripe .e{animation:bob .7s infinite alternate}
+@keyframes glow{from{box-shadow:0 0 6px var(--gc,#ffd54a88)}to{box-shadow:0 0 24px var(--gc,#ffd54acc)}}@keyframes bob{to{transform:translateY(-5px) scale(1.1)}}
+.plot u{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;background:#0006;display:grid;place-items:center;text-decoration:none;font-size:13px;opacity:.45}.plot u.on{opacity:1;background:#7cfc9a66}
+.bd{position:absolute;top:5px;left:5px;max-width:70%;font-size:9px;font-weight:800;padding:2px 6px;border-radius:8px;background:var(--mc);color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
+.plot[style*="--mc"]{border:2px solid var(--mc);--gc:color-mix(in srgb,var(--mc) 75%,transparent);animation:glow 1.3s infinite alternate}
+.plot.mg0{background:linear-gradient(160deg,#6be67544,#2e5a2b88)}
+.plot.mg1{background:linear-gradient(160deg,#ffd54a77,#8b5a2b99)}
+.plot.mg2{background:linear-gradient(160deg,#6fe3ff66,#1d4d66cc)}
+.plot.mg3{background:linear-gradient(160deg,#ff7ad977,#4aa8ff77)}
+.plot.mg4{background:radial-gradient(circle at 50% 30%,#7b3fe4cc,#0b0820)}
+.plot.mg1 .e{filter:sepia(1) saturate(3.5) brightness(1.15) drop-shadow(0 0 6px #ffd54a)}
+.plot.mg2 .e{filter:hue-rotate(150deg) saturate(2) brightness(1.25) drop-shadow(0 0 7px #6fe3ff)}
+.plot.mg3 .e{animation:hue 3s linear infinite}.plot.ripe.mg3 .e{animation:bob .7s infinite alternate,hue 3s linear infinite}
+.plot.mg4 .e{filter:hue-rotate(250deg) saturate(2.5) drop-shadow(0 0 9px #b45cff)}
+@keyframes hue{from{filter:hue-rotate(0) saturate(2.2) drop-shadow(0 0 6px #fff)}to{filter:hue-rotate(360deg) saturate(2.2) drop-shadow(0 0 6px #fff)}}
+.plot.mg1::after,.plot.mg2::after,.plot.mg3::after,.plot.mg4::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 28%,#fff 0 1px,#0000 3px),radial-gradient(circle at 82% 36%,#fff 0 1px,#0000 3px),radial-gradient(circle at 70% 78%,#fff 0 1.5px,#0000 4px),radial-gradient(circle at 26% 72%,#fff 0 1px,#0000 3px);animation:tw 1.6s ease-in-out infinite alternate}
+.plot.mg0 .e{filter:drop-shadow(0 0 5px #6be675)}
+.bar{position:absolute;left:8px;right:8px;bottom:7px;height:5px;border-radius:4px;background:#0005}.bar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#7cfc9a,#d4ff6a)}
+.btn{border:0;border-radius:14px;padding:11px 14px;font-weight:700;font-size:14px;color:#10240f;background:linear-gradient(135deg,#7cfc9a,#d4ff6a)}.btn.g{background:linear-gradient(135deg,#ffd54a,#ff9f43)}.btn.s{padding:8px 10px;font-size:12px}.btn:disabled{opacity:.4}.wide{width:100%;margin-top:12px}.btn:active{transform:scale(.97)}
+.r2g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.r2g .full{grid-column:1/-1;padding:14px;font-size:16px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{flex:0 0 auto;border:2px solid var(--brd);border-radius:14px;padding:6px 10px;background:var(--panel);color:var(--text);font-size:13px;white-space:nowrap}.chip.on{border-color:var(--gold);background:#ffd54a22}.chip.dim{opacity:.45}.chip small{margin-left:4px;font-size:11px;color:var(--mut)}
+.chips.sd .chip{font-size:20px;padding:5px 10px;line-height:1.2;text-align:center}.chips.sd .chip small{display:block;margin:0}
+.box{background:var(--panel);border:1px solid var(--brd);border-radius:18px;padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.box .t{flex:1}.box small{color:var(--mut);display:block;margin-top:2px}.big{font-size:34px}.btns{display:flex;flex-direction:column;gap:5px}
+h2{font-size:14px;margin:18px 2px 8px;color:var(--mut)}h2[class]{color:var(--a)}
+.tip{color:var(--mut);font-size:12px;text-align:center;line-height:1.5}
+.help{width:28px;height:28px;border-radius:50%;border:1px solid var(--brd);background:var(--panel);color:var(--text);font-weight:800;font-size:14px;padding:0}.hp{font-size:13px;line-height:1.5;margin:0 2px 6px}
+.mkh{display:flex;gap:12px;align-items:center;padding:14px;border-radius:20px;margin-bottom:12px;background:linear-gradient(135deg,#ffd54a33,#ff9f4322);border:1px solid #ffd54a66}.mkh .t{flex:1}.mkh small{color:var(--mut);display:block;margin-top:2px}
+.mk{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.it{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:26px 10px 12px;border-radius:20px;background:linear-gradient(160deg,color-mix(in srgb,var(--mc) 30%,transparent),var(--panel));border:2px solid color-mix(in srgb,var(--mc) 65%,transparent)}
+.it .em{font-size:50px;line-height:1;filter:drop-shadow(0 4px 6px #0005)}.it b{font-size:15px}
+.it .cnt{position:absolute;top:8px;left:8px;background:#0007;color:#fff;font-size:12px;font-weight:800;padding:2px 9px;border-radius:10px}.it .fz2{position:absolute;top:7px;right:8px;font-size:16px}
+.it .bd2{font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;color:#111}
+.it .pr{color:var(--gold);font-weight:800;font-size:16px}.it .pr small{color:var(--mut);font-size:11px;font-weight:500}.it .btn{width:100%}
+.emp{text-align:center;padding:40px 16px;border-radius:20px;border:2px dashed var(--brd);color:var(--mut);font-weight:700}.emp div{font-size:56px;opacity:.6}.emp small{display:block;margin-top:6px;font-weight:400;font-size:12px}
+nav button{position:relative}.nb{position:absolute;top:2px;right:16%;background:#ff4d6d;color:#fff;font-size:10px;font-weight:800;border-radius:9px;padding:1px 5px}
+.mut{display:grid;gap:6px}.mi{display:flex;gap:8px;align-items:center;background:var(--panel);border:1px solid var(--mc);border-radius:12px;padding:6px 10px;font-size:13px}.mi small{margin-left:auto;color:var(--mut);font-size:11px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.r0{--a:#8f9cab;--b:#e3e8ed;--p:#f3f5f7;--a1:#d6dee6;--a2:#7b8998}.r1{--a:#2fbf5b;--b:#c4f5d2;--p:#eefbe9;--a1:#a6f2b9;--a2:#238a45}.r2{--a:#2f8cf5;--b:#c6e2ff;--p:#eaf4ff;--a1:#93ccff;--a2:#1f5fc0}.r3{--a:#9b4dff;--b:#e6cdff;--p:#f6ecff;--a1:#d9adff;--a2:#5f27c2}.r4{--a:#f5a300;--b:#ffe9a0;--p:#fff6d9;--a1:#ffe680;--a2:#d96f00}.r5{--a:#ff3d6e;--b:#ffc4d3;--p:#fff0f4;--a1:#ff94b0;--a2:#a0003c}.r6{--a:#e6b800;--b:#fff7cc;--p:#fffdf0;--a1:#fff;--a2:#e0a100}
+.card{container-type:inline-size;position:relative;aspect-ratio:5/7;border-radius:7%/5%;background:linear-gradient(135deg,var(--b),var(--a) 40%,var(--b) 65%,var(--a));box-shadow:0 5px 16px #0006,0 0 20px color-mix(in srgb,var(--a) 50%,transparent);cursor:pointer;transition:transform .12s}
+.card:active{transform:scale(.97)}
+.in{position:absolute;inset:2.6% 3.6%;border-radius:5cqw;background:var(--p);color:#1c1c24;display:flex;flex-direction:column;gap:2cqw;padding:3.5cqw;overflow:hidden}
+.tp{display:flex;align-items:center;justify-content:space-between;gap:2cqw;font-weight:900;min-height:8cqw}.tp b{font-size:6.6cqw;white-space:nowrap;line-height:1.1}.tp b.sm{font-size:5.4cqw}.tp b.xs{font-size:4.3cqw}
+.lvb{flex:0 0 auto;font-size:3.6cqw;font-weight:800;color:#fff;background:var(--a2);border-radius:10cqw;padding:.8cqw 2.4cqw}
+.art{flex:1;min-height:0;position:relative;border-radius:3cqw;border:1cqw solid var(--a);box-shadow:inset 0 0 6cqw #0004;background:radial-gradient(circle at 50% 35%,var(--a1),var(--a2));overflow:hidden;display:grid;place-items:center}.art>*{grid-area:1/1}
+.rays{width:300%;aspect-ratio:1;background:repeating-conic-gradient(#ffffff30 0 7deg,#0000 7deg 18deg);animation:sp 24s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.num{font:900 42cqw/1 Impact,"Arial Black",system-ui,sans-serif;color:#fff;-webkit-text-stroke:1.2cqw var(--a2);paint-order:stroke fill;text-shadow:0 2cqw 0 var(--a2),0 4cqw 5cqw #0006;z-index:1}.num.t{font-size:32cqw}
+.r2 .art::after,.r3 .art::after,.r4 .art::after,.r5 .art::after,.r6 .art::after{content:"";z-index:2;pointer-events:none;grid-area:1/1;background:radial-gradient(circle at 18% 22%,#fff 0 .8cqw,#0000 1.8cqw),radial-gradient(circle at 82% 30%,#fff 0 .6cqw,#0000 1.5cqw),radial-gradient(circle at 70% 80%,#fff 0 .9cqw,#0000 2cqw),radial-gradient(circle at 24% 76%,#fff 0 .6cqw,#0000 1.5cqw);animation:tw 1.8s ease-in-out infinite alternate}@keyframes tw{from{opacity:.2}to{opacity:1}}
+.st{font-size:4cqw;font-weight:700;text-align:center;color:var(--a2);background:linear-gradient(90deg,#0000,var(--b),#0000);padding:.6cqw}
+.mv{display:flex;align-items:center;gap:2.5cqw;border-top:.4cqw solid #0002;padding-top:2cqw}.mv .o{flex:0 0 8cqw;height:8cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--a));display:grid;place-items:center;font-size:4.4cqw}
+.mv div{flex:1;font-size:5cqw;font-weight:800;line-height:1.1}.mv small{display:block;font-size:3.6cqw;font-weight:500;color:#555}.mv strong{font-size:6.6cqw;font-weight:900}
+.nm{font:italic 800 9cqw/1.1 Georgia,"Times New Roman",serif;text-align:center;color:var(--a2);letter-spacing:.3cqw;padding:1.2cqw 0;background:linear-gradient(90deg,#0000,var(--b),#0000);white-space:nowrap}.nm.sm{font-size:7.5cqw}.nm.xs{font-size:6.4cqw}.lk .nm{color:#556070;background:none}
+.fc{font-size:3.8cqw;font-style:italic;color:#555;text-align:center}
+.ft{display:flex;justify-content:space-between;font-size:3.8cqw;font-weight:700;color:#555}.ft .lv{color:#e6a700}
+.cards .rays,.cards .hl,.cards .art::after{animation:none}
+.lk{filter:saturate(.15) brightness(.8)}.lk .in{background:#2a3340;color:#8b97a6}.lk .num{color:#556070;text-shadow:none;-webkit-text-stroke:0}.lk .art{background:#1a212b;box-shadow:none}.lk .rays{display:none}
+.new{position:absolute;top:-8px;right:-4px;z-index:3;color:#fff;font-size:10px;font-weight:800;padding:3px 7px;border-radius:8px}
+.ov{position:fixed;inset:0;z-index:20;background:#000c;display:none;align-items:center;justify-content:center;padding:16px}.ov.on{display:flex}
+.sheet{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--bg2);border:1px solid var(--brd);border-radius:22px;padding:16px;color:var(--text)}
+.pk{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 6px}.pk .card{flex:0 0 68%;scroll-snap-align:center;opacity:0;animation:pop .6s forwards}
+@keyframes pop{from{opacity:0;transform:rotateY(90deg) scale(.5)}to{opacity:1;transform:none}}
+.zoom .card{width:min(100%,300px);margin:8px auto;display:block}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#000d;color:#fff;padding:10px 16px;border-radius:14px;z-index:40;font-size:13px;display:none;max-width:90%;text-align:center}
+.fl{position:fixed;z-index:30;font-weight:900;font-size:18px;pointer-events:none;text-shadow:0 2px 6px #000;transform:translateX(-50%);animation:fl 1.1s ease-out forwards}
+@keyframes fl{to{transform:translate(-50%,-70px);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* карточки v3: фон на всю карточку, объёмные числа */
+.in{inset:2.2% 3%;padding:3cqw;gap:0;background:radial-gradient(circle at 50% 42%,var(--a1),var(--a2) 88%)}
+.in::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-radial-gradient(circle at 50% 42%,#ffffff1c 0 2.5cqw,#0000 2.5cqw 7cqw),radial-gradient(circle at 50% 100%,#0007,#0000 55%),radial-gradient(circle at 50% 0,#0006,#0000 40%)}
+.art{position:absolute;inset:0;border:0;border-radius:0;box-shadow:none;background:none;padding-bottom:14cqw}
+.rays{position:absolute;left:50%;top:42%;width:260%;aspect-ratio:1;transform:translate(-50%,-50%);background:repeating-conic-gradient(#ffffff3a 0 6deg,#0000 6deg 15deg);-webkit-mask:radial-gradient(circle,#000 6%,#0000 50%);mask:radial-gradient(circle,#000 6%,#0000 50%);animation:sp2 30s linear infinite}
+@keyframes sp2{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.num{position:relative;font:900 54cqw/1 Impact,"Arial Black",system-ui,sans-serif;letter-spacing:-1cqw;color:#fff;-webkit-text-stroke:1.6cqw var(--a2);paint-order:stroke fill;text-shadow:0 1cqw 0 var(--a2),0 2cqw 0 var(--a2),0 3cqw 0 var(--a2),0 4cqw 0 var(--a2),0 5cqw 0 var(--a2),0 6cqw 7cqw #000a,0 0 14cqw var(--a1)}
+.num.t{font-size:41cqw}
+.tp{position:relative;z-index:2;color:#fff;text-shadow:0 .6cqw 1.5cqw #0009;margin:-3cqw -3cqw 0;padding:3cqw 3cqw 6cqw;background:linear-gradient(#0000005a,#0000)}
+.bt{position:relative;z-index:2;margin-top:auto;background:var(--p);border:.9cqw solid var(--a);border-radius:4cqw;padding:1.5cqw 2.5cqw 2cqw;display:flex;flex-direction:column;gap:.8cqw;box-shadow:0 1cqw 4cqw #0005}
+.bt .nm{background:none;padding:0}
+.lk .in{background:radial-gradient(circle at 50% 42%,#3a4452,#1a212b)}.lk .art{background:none}.lk .bt{background:#2a3340;border-color:#3a4452}
+.news{font-size:12px;line-height:1.7;background:var(--panel);border:1px solid var(--brd);border-radius:14px;padding:8px 12px;margin-bottom:12px;color:var(--mut)}
+.tr{display:block;font-size:11px;font-weight:700;color:var(--mut)}.tr.up{color:#4be07a}.tr.dn{color:#ff6b6b}
+nav button{font-size:11px}
+.inp{width:90px;border:2px solid var(--brd);border-radius:12px;padding:8px;background:var(--panel);color:var(--text);font-size:16px}
+.cm{height:42vh;overflow-y:auto;border:1px solid var(--brd);border-radius:18px;padding:8px;background:var(--panel);margin-bottom:10px;display:flex;flex-direction:column;gap:6px}
+.cb{max-width:82%;align-self:flex-start;background:#ffffff1c;border-radius:14px;padding:6px 10px;font-size:14px;word-break:break-word;user-select:text;-webkit-user-select:text}
+.cb.me{align-self:flex-end;background:#7cfc9a40}.cb small{display:block;font-size:10px;color:var(--mut)}
+nav button{font-size:10px;padding:9px 1px}nav button b{font-size:18px}
+.rxs{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}.rx{font-size:12px;background:#0003;border-radius:10px;padding:1px 7px}.rx.on{background:#7cfc9a55}
+
+/* новые мутации */
+.plot.mg5{background:linear-gradient(160deg,#bff2ff77,#2a5a8acc)}
+.plot.mg6{background:linear-gradient(160deg,#ff9a3d88,#6a1a08cc)}
+.plot.mg7{background:radial-gradient(circle at 50% 30%,#ffe14a99,#2a2305)}
+.plot.mg8{background:linear-gradient(160deg,#cfd8ff55,#2a2f55dd)}
+.plot.mg9{background:radial-gradient(circle at 50% 30%,#e08bffcc,#2a0a3a)}
+.plot.mg10{background:radial-gradient(circle at 50% 30%,#fff7c8cc,#b8860b99 60%,#3a2a05)}
+.plot.mg5 .e{filter:hue-rotate(160deg) saturate(1.6) brightness(1.3) drop-shadow(0 0 7px #9fe3ff)}
+.plot.mg6 .e{filter:sepia(1) saturate(5) hue-rotate(-18deg) drop-shadow(0 0 9px #ff7a3d)}
+.plot.mg7 .e{filter:brightness(1.35) saturate(2) drop-shadow(0 0 9px #ffe14a)}
+.plot.mg8 .e{filter:grayscale(1) brightness(1.5) opacity(.8) drop-shadow(0 0 9px #cfd8ff)}
+.plot.mg9 .e{filter:hue-rotate(290deg) saturate(3) brightness(1.2) drop-shadow(0 0 10px #e08bff)}
+.plot.mg10 .e{animation:pulse 1.4s ease-in-out infinite alternate}.plot.ripe.mg10 .e{animation:bob .7s infinite alternate,pulse 1.4s ease-in-out infinite alternate}
+@keyframes pulse{from{filter:brightness(1.1) drop-shadow(0 0 6px #fff1a8)}to{filter:brightness(1.6) saturate(1.5) drop-shadow(0 0 16px #fff)}}
+.plot.mg5::after,.plot.mg6::after,.plot.mg7::after,.plot.mg8::after,.plot.mg9::after,.plot.mg10::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 28%,#fff 0 1px,#0000 3px),radial-gradient(circle at 82% 36%,#fff 0 1px,#0000 3px),radial-gradient(circle at 70% 78%,#fff 0 1.5px,#0000 4px),radial-gradient(circle at 26% 72%,#fff 0 1px,#0000 3px);animation:tw 1.6s ease-in-out infinite alternate}
+</style></head><body>
+<header><h1>🌿 Сад Чудес</h1><div style="display:flex;align-items:center;gap:10px"><div class="money" id="mon"></div><button class="help" onclick="help()" aria-label="Помощь">?</button></div></header>
+<main id="main"></main><nav id="nav"></nav>
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div><div class="toast" id="toast"></div>
+<script>
+// [эмодзи, название, цена семени, секунд роста, цена продажи]
+const PL=[["🥕","Морковь",3,15,14],["🥬","Салат",6,20,22],["🌽","Кукуруза",10,30,36],["🍅","Помидор",18,45,62],["🥔","Картошка",30,60,105],["🍓","Клубника",50,80,170],["🍆","Баклажан",80,100,270],["🥦","Брокколи",130,120,440],["🎃","Тыква",200,150,680],["🍉","Арбуз",320,180,1050],["🌻","Подсолнух",500,210,1650],["🍇","Виноград",800,240,2600],["🌶️","Перец",1200,270,3900],["🍄","Гриб",1900,300,6100],["🍋","Лимон",3000,330,9600],["🍑","Персик",4800,360,15000],["🌷","Тюльпан",7500,400,23500],["🌹","Роза",12000,440,38000],["🪻","Лаванда",19000,480,60000],["🌺","Гибискус",30000,520,96000],["🌸","Сакура",48000,560,155000],["🪷","Лотос",80000,600,255000],["🌵","Кактус",130000,640,420000],["🍀","Клевер удачи",220000,700,700000],["🥭","Манго",350000,740,0],["🍍","Ананас",560000,780,0],["🥥","Кокос",900000,820,0],["🍒","Вишня",1450000,860,0],["🍐","Груша",2300000,900,0],["🥝","Киви",3700000,940,0],["🥑","Авокадо",6000000,980,0],["🍈","Дыня",9500000,1020,0],["🌰","Каштан",15000000,1060,0],["🍊","Апельсин",24000000,1100,0],["🌾","Рис",38000000,1140,0],["🎋","Бамбук",60000000,1180,0],["🌴","Пальма",95000000,1220,0],["🍁","Клён",150000000,1260,0],["💐","Букет",240000000,1300,0],["🌳","Древо жизни",400000000,1350,0]];
+// мутации: [название, эмодзи, множитель цены, шанс %, цвет]
+const MUT=[["Огромное","📏",1.2,6,"#6be675"],["Золотое","✨",1.5,2.5,"#ffd54a"],["Алмазное","💎",2,1,"#6fe3ff"],["Радужное","🌈",3,.35,"#ff7ad9"],["Космическое","🌌",5,.1,"#b45cff"],["Ледяное","❄️",1.3,4,"#9fe3ff"],["Огненное","🔥",1.7,1.8,"#ff7a3d"],["Электрическое","⚡",2.5,.6,"#ffe14a"],["Призрачное","👻",4,.2,"#cfd8ff"],["Кристальное","🔮",8,.05,"#e08bff"],["Божественное","👑",15,.02,"#fff1a8"]];
+const R=["Обычная","Необычная","Редкая","Эпическая","Легендарная","Мифическая","Божественная"],RG=[[1,30],[31,55],[56,75],[76,88],[89,95],[96,99],[100,100]],WT=[1,2,4,8,16,32,100],SY=["●","◆","★","★★","★★★","✦✦✦","♛"],AB=["Росток удачи","Щедрый урожай","Золотой колос","Королевский сбор","Звёздный дождь","Метеоритный рост","Чудо сада"];
+const PACK={n:"Пак чудес",e:"🎁",c:500,w:[45,27,15,8,3.5,1.3,.2]},DW=[75,20,5,0,0,0,0],PR={fe:100},RC=["#8f9cab","#2fbf5b","#2f8cf5","#9b4dff","#f5a300","#ff3d6e","#e6b800"];
+const U=["","один","два","три","четыре","пять","шесть","семь","восемь","девять","десять","одиннадцать","двенадцать","тринадцать","четырнадцать","пятнадцать","шестнадцать","семнадцать","восемнадцать","девятнадцать"],T=["","","двадцать","тридцать","сорок","пятьдесят","шестьдесят","семьдесят","восемьдесят","девяносто"];
+const nw=n=>{const s=n==100?"сто":n<20?U[n]:T[n/10|0]+(n%10?" "+U[n%10]:"");return s[0].toUpperCase()+s.slice(1)};
+const isP=n=>{if(n<2)return 0;for(let d=2;d*d<=n;d++)if(n%d==0)return 0;return 1};
+function fact(n){const q=Math.sqrt(n);if(n==100)return"Целая сотня — вершина сада";if(isP(n))return"Простое: делится лишь на 1 и на себя";if(q%1==0)return`Квадрат: ${q} × ${q}`;if([8,13,21,34,55,89].includes(n))return"Число Фибоначчи — спираль природы";if([6,10,15,28,45,66,78,91].includes(n))return"Треугольное число";if(n%11==0)return"Зеркальное число";return"Кратно "+[2,3,5,7].find(d=>n%d==0)}
+PL.forEach((p,i)=>p[4]=Math.round(p[2]*(1.7-i*.008)));
+// ---- состояние ----
+let S={m:60,cards:{},s:{0:4},sel:0,fe:3,h:{},dup:{},ct:0,plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,dsc:0,nw:[],esc:{},mc:{}},K="sadchudes5",tab=0,SG="",sv=0;
+try{["sadchudes2","sadchudes3","sadchudes4"].forEach(k=>localStorage.removeItem(k));const x=localStorage.getItem(K);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
+if(!S.tr)S.tr={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
+if(!S.mk||!S.mk.x||S.mk.x.length!=PL.length)S.mk={t:Date.now(),x:PL.map(()=>1)};
+if(S.mv!=3){S.plots.forEach(pl=>{if(pl.p!=null)pl.m=pl.m>=0?1<<pl.m:0});const nh={};for(const k in S.h){const a=k.split(".").map(Number);a[2]=a[2]>=0?1<<a[2]:0;const nk=a.join(".");nh[nk]=(nh[nk]||0)+S.h[k]}S.h=nh;S.mv=3}
+S.plots=S.plots.map(pl=>pl.p==null?{p:null}:{p:pl.p,g:pl.g||0,f:pl.f?1:0,m:pl.m|0,l:pl.l||Date.now()});
+function ensureSel(){if(S.sel!=null&&S.s[S.sel]>0)return;const k=PL.findIndex((_,i)=>S.s[i]>0);S.sel=k<0?null:k}ensureSel();
+if(!S.v){for(const n in S.cards){const l=S.cards[n];S.cards[n]=1;if(l>1)S.dup[n]=(S.dup[n]||0)+l-1}S.v=2}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}},$=i=>document.getElementById(i);
+const fmt=n=>{n=Math.floor(n);if(n<10000)return n.toLocaleString("ru");for(const[v,s]of[[1e12,"трлн"],[1e9,"млрд"],[1e6,"млн"],[1e3,"тыс"]])if(n>=v){const q=n/v;return(q<100?q.toFixed(1).replace(/\.0$/,""):Math.floor(q)+"").replace(".",",")+" "+s}};
+const dur=s=>s>=60?(s/60|0)+"м"+(s%60?" "+s%60+"с":""):s+"с";
+const rar=n=>RG.findIndex(g=>n<=g[1]);
+const tm=i=>PL[i][3]*1000,rate=pl=>(1+.1*S.spd)*(pl.f?2:1);
+const mm=m=>MUT.map((_,k)=>k).filter(k=>m>>k&1),mmul=m=>mm(m).reduce((a,k)=>a*MUT[k][2],1),mtop=m=>mm(m).reduce((a,k)=>MUT[k][2]>=MUT[a][2]?k:a);
+const val=(i,f,m)=>PL[i][4]*S.mk.x[i]*(1+.05*S.prc)*(f?1.15:1)*(m?mmul(m):1);
+const sc=i=>Math.max(1,Math.round(PL[i][2]*(1-.02*S.dsc)));
+const upc=(b,l)=>Math.round(b*Math.pow(1.7,l)),plotCost=()=>Math.round(150*Math.pow(2.3,S.plots.length-2));
+const luck=f=>(1+.1*S.lck)*(f?3:1);
+function rollMut(l,b){b=b|0;let c=mm(b).length;for(let k=0;k<MUT.length;k++){if(b>>k&1)continue;if(Math.random()*100<Math.min(90,MUT[k][3]*l*(1+2*c))){b|=1<<k;c++}}return b}
+function toast(t){const e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display="none",2400)}
+const no=(q,t)=>{if(!q)toast(t);return 0},vib=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}};
+function fx(i,t,col){if(tab!=0)return;const el=document.querySelectorAll(".plot")[i];if(!el)return;const r=el.getBoundingClientRect(),d=document.createElement("div");d.className="fl";d.textContent=t;d.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+r.height/3}px;color:${col}`;document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+function adv(pl,now){if(pl.p==null)return;const dt=Math.max(0,now-(pl.l||now));pl.l=now;pl.g=Math.min(tm(pl.p),(pl.g||0)+dt*rate(pl))}
+const kind=pl=>pl.p==null?"e":pl.g>=tm(pl.p)-1?"r":"d";
+const sg=()=>S.plots.map(pl=>kind(pl)+pl.p+"."+pl.m+(pl.f?1:0)+(pl.p!=null&&pl.g/tm(pl.p)<.35?0:1)).join()+"|"+S.sel;
+const esz=(pl,pr)=>Math.round((16+pr*28)*(pl.m&1?1.3:1));
+// ---- карточки ----
+function C(n,l,x){const r=rar(n),id=String(n).padStart(3,"0"),nm=nw(n),ln=nm.length>12?" xs":nm.length>8?" sm":"";
+ if(!l)return`<div class="card r${r} lk"><div class="in"><div class="tp"><b>№${id}</b><span class="lvb">${R[r]}</span></div><div class="art"><div class="rays"></div><div class="num${n>99?" t":""}">?</div></div><div class="bt"><div class="nm">???</div><div class="ft"><span>${id}/100</span><span>${SY[r]}</span></div></div></div></div>`;
+ return`<div class="card r${r}">${x||""}<div class="in"><div class="tp"><b>№${id}</b><span class="lvb">${R[r]}</span></div><div class="art"><div class="rays"></div><div class="num${n>99?" t":""}">${n}</div></div><div class="bt"><div class="nm${ln}">${nm}</div><div class="fc">${fact(n)}</div><div class="ft"><span>${id}/100</span><span>${SY[r]}</span></div></div></div></div>`}
+const tg={NEW:["NEW","#ff4d6d"],DUP:["ДУБЛЬ","#2f8cf5"]},tagH=t=>`<span class="new" style="background:${tg[t][1]}">${tg[t][0]}</span>`;
+function roll(w){let r=Math.random()*100,k=0;for(let i=0;i<7;i++){r-=w[i];if(r<0){k=i;break}}const g=RG[k];return g[0]+Math.floor(Math.random()*(g[1]-g[0]+1))}
+function give(n){if(!S.cards[n]){S.cards[n]=1;return"NEW"}S.dup[n]=(S.dup[n]||0)+1;return"DUP"}
+function openOv(h,c){$("sheet").className="sheet "+(c||"");$("sheet").innerHTML=h;$("ov").classList.add("on")}
+function closeOv(){$("ov").classList.remove("on");render()}
+function buyPack(){const k=PACK;if(S.m<k.c)return;S.m-=k.c;const nb2=[],res=[0,0,0].map(()=>{const n=roll(k.w),t=give(n);if(t=="NEW"&&!nb2.includes(n))nb2.push(n);return C(n,S.cards[n],tagH(t))});if(nb2.length)S.nw=nb2;save();vib(30);
+ openOv(`<h2 style="margin-top:0;text-align:center;color:var(--text)">${k.e} ${k.n} — листай →</h2><div class="pk">${res.join("")}</div><div class="r2g"><button class="btn g" ${S.m<k.c?"disabled":""} onclick="closeOv();buyPack()">Ещё · 💰${fmt(k.c)}</button><button class="btn" onclick="closeOv()">Забрать!</button></div>`);
+ document.querySelectorAll(".pk .card").forEach((c,j)=>c.style.animationDelay=j*.5+"s")}
+function zoom(n){openOv(`<div class="zoom">${C(n,1)}</div><p class="tip">${S.dup[n]?"Дубликатов в папке: "+S.dup[n]:"Карточка для коллекции"}</p><button class="btn wide" onclick="closeOv()">Закрыть</button>`,"zoom")}
+// ---- сад ----
+function plotH(pl,i){const k=kind(pl);
+ if(k=="e")return`<div class="plot" onclick="pc(${i})"><div class="e" style="font-size:30px">➕</div>Посадить<br><b style="font-size:16px">${S.sel!=null?PL[S.sel][0]:""}</b></div>`;
+ const p=PL[pl.p],m=pl.m|0,ms=mm(m),tt=m?mtop(m):-1,mc=m?" mg"+tt:"",st=m?`style="--mc:${MUT[tt][4]}"`:"",bd=m?`<span class="bd">${ms.map(k=>MUT[k][1]).join("")}${ms.length>1?"":" "+MUT[tt][0]}</span>`:"",fz=`<u class="${pl.f?"on":""}">🧪</u>`;
+ if(k=="r")return`<div class="plot ripe${mc}" ${st} onclick="pc(${i})">${bd}${pl.f?fz:""}<div class="e" style="font-size:${esz(pl,1)}px">${p[0]}</div>${p[1]}<br>💰${fmt(val(pl.p,pl.f,m))}</div>`;
+ const pr=pl.g/tm(pl.p);
+ return`<div class="plot g${mc}" ${st} onclick="pc(${i})">${bd}${fz}<div class="e" id="e${i}" style="font-size:${esz(pl,pr)}px">${pr<.35?"🌱":p[0]}</div><span id="t${i}"></span><div class="bar"><i id="b${i}"></i></div></div>`}
+function gardenH(){SG=sg();
+ const seeds=PL.map((p,i)=>S.s[i]>0?`<button class="chip ${S.sel==i?"on":""}" onclick="sel(${i})">${p[0]}<small>×${S.s[i]}</small></button>`:"").join("");
+ return`<h2 style="margin-top:0">🎒 Инвентарь</h2><div class="chips sd" id="chips">${seeds}<span class="chip ${S.fe>0?"":"dim"}">🧪<small>×${S.fe}</small></span></div>${seeds?"":'<p class="tip">Семян нет — купи их в магазине 🛒</p>'}
+<div class="grid">${S.plots.map(plotH).join("")}</div>
+<p class="tip">Выбери семя в инвентаре и нажми на пустую грядку. Нажми на растущее растение — удобришь его. Спелое нажми, чтобы собрать; продавать урожай нужно на вкладке «Продажа». Подробности — в «?» сверху.</p>`}
+function sel(i){S.sel=i;save();render()}
+function pc(i){const pl=S.plots[i],k=kind(pl);if(k=="r")harv(i);else if(k=="d")fz(i);else if(plant(i)){save();render()}else toast("Нет семян — купи в магазине 🛒")}
+function plant(i){ensureSel();const id=S.sel;if(id==null)return 0;S.s[id]--;S.plots[i]={p:id,g:0,f:0,m:rollMut(luck(0),0),l:Date.now()};ensureSel();return 1}
+function fz(i){const pl=S.plots[i];if(pl.p==null||kind(pl)=="r")return 0;if(pl.f){toast("Уже удобрено 🧪");return 0}
+ if(S.fe<1){toast("Нет удобрения — купи в магазине 🧪");return 0}
+ adv(pl,Date.now());S.fe--;pl.f=1;pl.m=rollMut(luck(1),pl.m|0);fx(i,"🧪 ×2","#7cfc9a");vib(15);save();render();return 1}
+function hv(i){const pl=S.plots[i],m=pl.m|0,k=pl.p+"."+(pl.f?1:0)+"."+m,q=Math.random()<.04*S.yld?2:1;S.h[k]=(S.h[k]||0)+q;mm(m).forEach(x=>S.mc[x]=(S.mc[x]||0)+1);fx(i,"+"+PL[pl.p][0]+(q>1?"×2":""),m?MUT[mtop(m)][4]:"#ffd54a");S.plots[i]={p:null};return[q,m]}
+const mtxt=m=>m?" · "+mm(m).map(k=>MUT[k][1]+" "+MUT[k][0]).join(" + ")+"!":"";
+function harv(i){const p=PL[S.plots[i].p],[q,m]=hv(i);toast("Собрано: "+p[0]+" "+p[1]+(q>1?" ×2 🧺":"")+mtxt(m));vib(m?[20,40,20]:15);save();render()}
+function sellAll(){let tot=0,n=0;for(const k of Object.keys(S.h)){const q=S.h[k];if(!(q>0))continue;const[p,f,m]=k.split(".").map(Number);tot+=val(p,f,m)*q;n+=q;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));delete S.h[k]}if(!n)return;S.m+=tot;toast("Продано: "+n+" шт · 💰"+fmt(tot));vib(25);save();render()}
+function sell(k,all){const n=S.h[k]||0;if(!n)return;const[p,f,m]=k.split(".").map(Number),q=all?n:1,v=val(p,f,m)*q;S.h[k]=n-q;if(S.h[k]<=0)delete S.h[k];S.m+=v;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));toast("Продано: "+PL[p][0]+" ×"+q+" · 💰"+fmt(v));vib(15);save();render()}
+// ---- магазин ----
+function shopH(){const b=(l,c,f)=>`<button class="btn s" ${S.m<c?"disabled":""} onclick="${f}">${l} 💰${fmt(c)}</button>`;
+ let h="";
+ h+=`<h2>Удобрение</h2><div class="box"><div class="big">🧪</div><div class="t"><b>Удобрение · есть ${S.fe}</b><small>Рост ×2, урожай +15%, шанс мутации ×3</small></div><div class="btns">${b("×1",PR.fe,"buy(1)")}${b("×10",PR.fe*10,"buy(10)")}${b("×50",PR.fe*50,"buy(50)")}</div></div>`;
+ h+=`<h2>Пак карточек</h2><div class="box"><div class="big">${PACK.e}</div><div class="t"><b>${PACK.n}</b><small>3 числа из 100 — от обычных до божественных</small></div>${b("",PACK.c,"buyPack()")}</div>`;
+ return h+"<h2>Семена растений</h2>"+PL.map((p,i)=>`<div class="box"><div class="big">${p[0]}</div><div class="t"><b>${p[1]}${S.s[i]>0?" · есть "+S.s[i]:""}</b><small>⏱${dur(p[3])} · продажа 💰${fmt(p[4]*S.mk.x[i])} ${S.mk.x[i]>=1.05?"▲":S.mk.x[i]<=.95?"▼":""}</small></div><div class="btns">${b("×1",sc(i),`bs(${i},1)`)}${b("×10",sc(i)*10,`bs(${i},10)`)}</div></div>`).join("")}
+function marketH(){const ks=Object.keys(S.h).filter(k=>S.h[k]>0).sort((a,c)=>+a.split(".")[0]-+c.split(".")[0]);let tot=0,cnt=0;
+ const items=ks.map(k=>{const[p,f,m]=k.split(".").map(Number),n=S.h[k],v=val(p,f,m),P=PL[p],mc=m?MUT[mtop(m)][4]:"#8fd19e",mu=mm(m).map(x=>`<span class="bd2" style="background:${MUT[x][4]}">${MUT[x][1]} ${MUT[x][0]}</span>`).join("");tot+=v*n;cnt+=n;const x=S.mk.x[p],tr=x>=1.05?`<span class="tr up">▲ +${Math.round((x-1)*100)}%</span>`:x<=.95?`<span class="tr dn">▼ −${Math.round((1-x)*100)}%</span>`:`<span class="tr">≈ норма</span>`;
+  return`<div class="it" style="--mc:${mc}"><span class="cnt">×${n}</span>${f?'<span class="fz2">🧪</span>':""}<div class="em">${P[0]}</div><b>${P[1]}</b>${mu}<div class="pr">💰${fmt(v)}<small> за шт</small>${tr}</div>${n>1?`<button class="btn g s" onclick="sell('${k}',0)">Продать 1</button><button class="btn s" onclick="sell('${k}',1)">Все · 💰${fmt(v*n)}</button>`:`<button class="btn g s" onclick="sell('${k}',0)">Продать</button>`}</div>`}).join("");
+ return`<div class="mkh"><div class="big">🧺</div><div class="t"><b>Рынок</b><small>${cnt?"На складе: "+cnt+" шт · всего 💰"+fmt(tot):"Склад пуст"}</small></div>${cnt?'<button class="btn g s" onclick="sellAll()">Продать всё</button>':""}</div>`+news()+(cnt?`<div class="mk">${items}</div>`:`<div class="emp"><div>🧺</div>Корзина пуста<small>Вырасти и собери урожай в саду — потом продай его здесь</small></div>`)}
+function buy(n){const c=PR.fe*n;if(S.m<c)return;S.m-=c;S.fe+=n;save();render()}
+function bs(i,n){const c=sc(i)*n;if(S.m<c)return;S.m-=c;S.s[i]=(S.s[i]||0)+n;save();render()}
+// ---- коллекция и улучшения ----
+function colH(){const dn=Object.keys(S.dup).filter(n=>S.dup[n]>0),dt=dn.reduce((a,n)=>a+S.dup[n],0),
+ tabs=`<div class="chips"><button class="chip ${S.ct?"":"on"}" onclick="S.ct=0;render()">🃏 Коллекция ${Object.keys(S.cards).length}/100</button><button class="chip ${S.ct?"on":""}" onclick="S.ct=1;render()">📁 Дубликаты ${dt}</button></div>`;
+ if(S.ct)return tabs+(dn.length?`<div class="cards">`+dn.map(n=>`<div style="position:relative" onclick="zoom(${n})"><span class="new" style="background:#2f8cf5">×${S.dup[n]}</span>${C(+n,1)}</div>`).join("")+"</div>":`<p class="tip">Папка пуста. Когда выпадет карточка, которая у тебя уже есть, она попадёт сюда.</p>`);
+ let h=tabs+`<p class="tip" style="margin:0 0 4px">Карточки нужны только для коллекции. Нажми на карточку, чтобы рассмотреть её.</p>`;
+ RG.forEach((g,i)=>{const l=[];for(let n=g[0];n<=g[1];n++)l.push(n);h+=`<h2 class="r${i}">${R[i]} · №${g[0]}${g[1]>g[0]?"–"+g[1]:""} · ${l.filter(n=>S.cards[n]).length}/${l.length}</h2><div class="cards">`+l.map(n=>S.cards[n]?`<div onclick="zoom(${n})">${C(n,1,S.nw.includes(n)?tagH("NEW"):"")}</div>`:C(n,0)).join("")+"</div>"});return h}
+function upH(){const a=upc(100,S.spd),b=upc(250,S.prc),d=upc(400,S.lck),y=upc(300,S.yld),e=upc(200,S.dsc),c=plotCost(),row=(em,t,s,cost,fn,max)=>`<div class="box"><div class="big">${em}</div><div class="t"><b>${t}</b><small>${s}</small></div><button class="btn g s" ${max||S.m<cost?"disabled":""} onclick="${fn}">${max?"MAX":"💰"+fmt(cost)}</button></div>`;
+ return"<h2>Улучшения</h2>"+row("⚡","Теплица · ур. "+S.spd+"/20","Рост быстрее на 10% за уровень (сейчас +"+S.spd*10+"%)",a,`up('spd',${a})`,S.spd>=20)+row("💎","Золотая лейка · ур. "+S.prc+"/20","Цена урожая +5% за уровень (сейчас +"+S.prc*5+"%)",b,`up('prc',${b})`,S.prc>=20)+row("🍀","Удача · ур. "+S.lck+"/25","Шанс мутаций +10% за уровень (сейчас +"+S.lck*10+"%)",d,`up('lck',${d})`,S.lck>=25)+row("🧺","Урожайность · ур. "+S.yld+"/15","Шанс удвоить урожай +4% за уровень (сейчас "+S.yld*4+"%)",y,`up('yld',${y})`,S.yld>=15)+row("🏷️","Скидка на семена · ур. "+S.dsc+"/15","Семена дешевле на 2% за уровень (сейчас −"+S.dsc*2+"%)",e,`up('dsc',${e})`,S.dsc>=15)+row("🪴","Новая грядка · "+S.plots.length+"/12","Больше растений одновременно",c,"newPlot()",S.plots.length>=12)}
+const UM={spd:20,prc:20,lck:25,yld:15,dsc:15};
+function up(k,c){if(S.m>=c&&S[k]<UM[k]){S.m-=c;S[k]++;save();render()}}
+function newPlot(){const c=plotCost();if(S.m>=c&&S.plots.length<12){S.m-=c;S.plots.push({p:null});save();render()}}
+function help(){const tot=PACK.w.reduce((a,b)=>a+b,0),p=x=>+(x/tot*100).toFixed(2);
+ openOv(`<h2 style="margin:0 0 4px;font-size:18px;color:var(--text)">❓ Помощь</h2><h2>🌱 Как играть</h2><p class="hp">Купи семена в магазине — они появятся в инвентаре над грядками. Выбери семя и нажми на пустую грядку, чтобы посадить. Когда растение созреет, нажми на него — урожай попадёт на склад. Продай его на вкладке «Продажа» за монеты 💰. Растения растут, даже когда игра закрыта.</p><h2>🧪 Удобрение</h2><p class="hp">Нажми на растущее растение, чтобы удобрить его: рост ×2, урожай +15%, шанс мутации ×3. Удобрения покупаются в магазине и тратятся вручную.</p><h2>🧬 Мутации</h2><p class="hp">Когда растение сажают или удобряют, оно может мутировать — тогда цена продажи растёт. Мутаций может быть сразу несколько: каждая выпавшая мутация втрое повышает шанс следующих, а цены мутаций перемножаются.</p><div class="mut">${MUT.map((m,k)=>`<div class="mi" style="--mc:${m[4]}"><span>${m[1]}</span><b>${m[0]}</b><small>цена ×${m[2]} · шанс ${+(m[3]*luck(0)).toFixed(2)}%${S.mc[k]?" · найдено "+S.mc[k]:""}</small></div>`).join("")}</div><h2>📈 Цены</h2><p class="hp">Цены на рынке меняются: то растут, то падают, а потом возвращаются к норме. Продавай, когда дорого! Если продать много сразу, цена на этот урожай немного просядет.</p><h2>🃏 Карточки</h2><p class="hp">В магазине продаётся пак чудес — 3 числа за раз. Выпасть может любое из 100 чисел, шанс зависит от редкости. Карточки ничего не делают — они нужны только для коллекции. Карточки выпадают только из паков. Повторные карточки попадают в папку «Дубликаты». Значок NEW стоит на новых карточках из последнего пака или обмена.</p><div class="mut">${R.map((r,i)=>`<div class="mi" style="--mc:${RC[i]}"><b>${r}</b><span>№${RG[i][0]}${RG[i][1]>RG[i][0]?"–"+RG[i][1]:""}</span><small>шанс ${p(PACK.w[i])}%</small></div>`).join("")}</div><h2>🤝 Обмен</h2><p class="hp">Введи код друга и предложи обмен. Если друг согласится, вы оба выберете по карточке из дубликатов. Когда оба подтвердите, карточки поменяются. Выбранная карточка лежит в залоге, пока обмен не закончится. Если кто-то сменит карточку, подтверждения сбросятся.</p><h2>⬆️ Улучшения</h2><p class="hp">⚡ Теплица — быстрее рост. 💎 Золотая лейка — дороже урожай. 🍀 Удача — чаще мутации. 🪴 Новая грядка — больше мест для посадки (до 12). 🧺 Урожайность — шанс удвоить урожай. 🏷️ Скидка — дешевле семена.</p><button class="btn wide" onclick="closeOv()">Понятно</button>`)}
+function render(){ensureSel();const hc=Object.values(S.h).reduce((a,b)=>a+b,0);const c=$("chips"),x=c?c.scrollLeft:0;
+ $("mon").textContent="💰 "+fmt(S.m);$("main").innerHTML=[gardenH,shopH,marketH,colH,upH,tradeH,chatH][tab]();
+ $("nav").innerHTML=[["🌱","Сад"],["🛒","Магазин"],["💰","Продажа"],["🃏","Карточки"],["⬆️","Улучшения"],["🤝","Обмен"],["💬","Чат"]].map((t,i)=>`<button class="${i==tab?"on":""}" onclick="go(${i})"><b>${t[0]}</b>${t[1]}${i==2&&hc?`<span class="nb">${hc>99?"99+":hc}</span>`:""}${i==5&&tn()?`<span class="nb">${tn()}</span>`:""}${i==6&&ur()?`<span class="nb">${ur()}</span>`:""}</button>`).join("");
+ const c2=$("chips");if(c2)c2.scrollLeft=x}
+function go(i){tab=i;render();window.scrollTo(0,0)}
+function mkStep(){const k=S.mk;let n=Math.min(40,Math.floor((Date.now()-k.t)/30000));if(n<1)return 0;k.t=Date.now();
+ while(n--)k.x=k.x.map(x=>{let y=x+(1-x)*.12+(Math.random()-.5)*.22;const r=Math.random();if(r<.03)y=1.3+Math.random()*.2;else if(r<.06)y=.5+Math.random()*.1;return Math.min(1.6,Math.max(.45,y))});return 1}
+const news=()=>{const u=[],d=[];S.mk.x.forEach((x,i)=>{if(x>=1.4)u.push(PL[i][0]+" ×"+x.toFixed(1));else if(x<=.7)d.push(PL[i][0]+" ×"+x.toFixed(1))});return`<div class="news">${u.length?`<div>🔥 Высокий спрос: ${u.join(" ")}</div>`:""}${d.length?`<div>📉 Цены упали: ${d.join(" ")}</div>`:""}${u.length||d.length?"":"<div>📊 Цены держатся около нормы</div>"}</div>`};
+function tick(){if(mkStep()){save();if((tab==2||tab==0)&&!$("ov").classList.contains("on"))render()}const now=Date.now();S.plots.forEach(pl=>adv(pl,now));
+ if(tab==0&&!$("ov").classList.contains("on")){if(sg()!=SG)render();else S.plots.forEach((pl,i)=>{if(pl.p==null||kind(pl)=="r")return;const b=tm(pl.p),e=$("e"+i);if(!e)return;$("b"+i).style.width=pl.g/b*100+"%";$("t"+i).textContent=PL[pl.p][1]+" · "+dur(Math.ceil((b-pl.g)/rate(pl)/1000));e.style.fontSize=esz(pl,pl.g/b)+"px"})}
+ if(now-sv>4000){save();sv=now}}
+document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest(".zoom .card");if(!c)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(700px) rotateY(${x*20}deg) rotateX(${-y*20}deg)`});
+document.addEventListener("pointerout",e=>{const c=e.target.closest&&e.target.closest(".zoom .card");if(c)c.style.transform=""});
+const away=S.plots.filter(pl=>{adv(pl,Date.now());return kind(pl)=="r"}).length;
+const FB_URL="https://sadchudes2-default-rtdb.firebaseio.com";let FBU=(FB_URL||localStorage.getItem("fbu")||"").replace(/\/$/,""),DB=0,TL=[],TO=null,tq="",TS="";
+if(!S.uid){S.uid="u"+Math.random().toString(36).slice(2,10);save()}const ME=S.uid;
+const api=(p,m,b)=>fetch(FBU+"/"+p+".json",{method:m||"GET",body:b!==undefined?JSON.stringify(b):undefined}).then(r=>{if(!r.ok)throw 0;return r.json()});
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num=x=>{x=+x;return x>=1&&x<=100&&x%1==0?x:0},sid=s=>/^[-\w]+$/.test(s),lk=o=>o.ca>0&&o.cb>0&&o.ka==o.ca+"_"+o.cb&&o.kb==o.ca+"_"+o.cb;
+const cn=n=>`<b style="color:${RC[rar(n)]}">№${n}</b> ${nw(n)}`;
+const tn=()=>TL.filter(o=>o.st=="req"&&o.b==S.code).length,tsig=()=>JSON.stringify(TL)+"|"+TO+"|"+JSON.stringify(S.dup)+"|"+JSON.stringify(S.esc);
+let CH="",CHN="",IB={},NM={},rd=0,rg=0,cf=1,LM={};
+const RX=["❤️","😄","☹️"];
+const apq=(p,q)=>fetch(FBU+"/"+p+".json?"+q).then(r=>{if(!r.ok)throw 0;return r.json()}),ok5=c=>/^\d{5}$/.test(c||""),dk=c=>[S.code,c].sort().join("_");
+// ---- связь с базой ----
+async function pull(){if(!FBU)return;try{const d=await api("trades")||{};TL=Object.keys(d).filter(sid).map(id=>({id,...d[id]})).filter(o=>o&&(o.a==S.code||o.b==S.code));TL.forEach(o=>{o.ca=num(o.ca);o.cb=num(o.cb)});if(S.code){try{IB=await api("inbox/"+S.code)||{}}catch(e){}}const w=DB;DB=1;if(!w&&(tab==5||tab==6))setTimeout(render,0);reg();try{await settleT()}catch(e){}const x=document.activeElement;if(tab==5&&!$("ov").classList.contains("on")&&!(x&&x.tagName=="INPUT")&&tsig()!=TS)render()}catch(e){if(DB){DB=0;if(tab==5||tab==6)render()}}}
+// ---- обмен: запрос -> согласие -> выбор карточек -> подтверждение обоих ----
+async function settleT(){const ids=new Set(TL.map(o=>o.id));
+ for(const id of Object.keys(S.esc)){if(!ids.has(id)){const n=S.esc[id];S.dup[n]=(S.dup[n]||0)+1;delete S.esc[id];save();toast("Обмен закрыт, карточка вернулась")}}
+ for(const o of TL){try{const me=o.a==S.code?"a":"b",ot=me=="a"?"b":"a",mine=me=="a"?o.ca:o.cb;
+  if(o.st=="on"&&me=="a"&&!S.tr["a"+o.id]){S.tr["a"+o.id]=1;save();toast("Игрок согласился на обмен! Открой его во вкладке «Обмен»")}
+  if(lk(o)&&(o.st=="on"||o.st=="x")){if(!o["r"+me]){if(!S.tr[o.id]){if(S.esc[o.id]!=mine)continue;const n=me=="a"?o.cb:o.ca,t=give(n);if(t=="NEW")S.nw=[n];delete S.esc[o.id];S.tr[o.id]=1;save();toast("Обмен завершён! Получена №"+n+(t=="NEW"?" 🆕":""))}await api("trades/"+o.id,"PATCH",{["r"+me]:true});if(o["r"+ot])await api("trades/"+o.id,"DELETE")}else if(o["r"+ot])await api("trades/"+o.id,"DELETE");continue}
+  if(o.st=="no"){if(me=="a"){toast("Игрок отказался от обмена");await api("trades/"+o.id,"DELETE")}continue}
+  if(o.st=="x"){const n=S.esc[o.id];if(n){S.dup[n]=(S.dup[n]||0)+1;delete S.esc[o.id];save();toast("Обмен отменён, карточка вернулась")}if(!o["x"+me])await api("trades/"+o.id,"PATCH",{["x"+me]:true});if(o["x"+ot])await api("trades/"+o.id,"DELETE")}
+ }catch(e){}}}
+async function mkTrade(){const v=($("tqi").value||"").trim();if(!ok5(v))return toast("Код — 5 цифр");if(!(await ensureMe()))return;if(v==S.code)return toast("Это твой код");
+ if(TL.filter(o=>o.st=="req"||o.st=="on").length>=5)return toast("Не больше 5 обменов сразу");if(TL.some(o=>(o.st=="req"||o.st=="on")&&(o.a==v||o.b==v)))return toast("С этим игроком уже есть обмен");
+ try{const d=await api("players/"+v);if(!d)return toast("Игрок не найден");await api("trades","POST",{a:S.code,b:v,an:S.nick||"Игрок",bn:d.nm||"Игрок",st:"req",ca:0,cb:0,ka:"",kb:"",t:Date.now()});tq="";toast("Предложение отправлено")}catch(e){return toast("Не получилось, попробуй ещё раз")}await pull();render()}
+async function trAns(id,ok){try{const d=await api("trades/"+id);if(!d||d.st!="req")return toast("Предложение уже недоступно");await api("trades/"+id,"PATCH",{st:ok?"on":"no"});if(ok)TO=id}catch(e){toast("Не получилось, попробуй ещё раз")}await pull();render()}
+async function trDel(id){try{await api("trades/"+id,"DELETE")}catch(e){toast("Не получилось")}await pull();render()}
+async function putCard(id,n){const o=TL.find(x=>x.id==id);if(!o||o.st!="on"||lk(o))return;const me=o.a==S.code?"a":"b",old=S.esc[id]||0;if(old==n)return;if(!(S.dup[n]>0))return toast("Нет такого дубликата");
+ if(old)S.dup[old]=(S.dup[old]||0)+1;S.dup[n]--;if(!S.dup[n])delete S.dup[n];S.esc[id]=n;save();
+ try{await api("trades/"+id,"PATCH",{["c"+me]:n})}catch(e){S.dup[n]=(S.dup[n]||0)+1;if(old){S.dup[old]--;if(!S.dup[old])delete S.dup[old];S.esc[id]=old}else delete S.esc[id];save();toast("Не получилось, попробуй ещё раз")}
+ await pull();render()}
+async function trOk(id){try{const d=await api("trades/"+id);if(!d||d.st!="on")return toast("Обмен недоступен");const me=d.a==S.code?"a":"b",a=num(d.ca),b=num(d.cb);if(!a||!b)return toast("Сначала обе стороны выбирают карточки");await api("trades/"+id,"PATCH",{["k"+me]:a+"_"+b})}catch(e){toast("Не получилось, попробуй ещё раз")}await pull();render()}
+async function trX(id){try{const d=await api("trades/"+id);if(!d)return;d.ca=num(d.ca);d.cb=num(d.cb);if(lk(d))return toast("Уже подтверждено обеими сторонами");await api("trades/"+id,"PATCH",{st:"x"})}catch(e){return toast("Не получилось")}TO=null;await pull();render()}
+function tradeView(o){const me=o.a==S.code?"a":"b",ot=me=="a"?"b":"a",mine=me=="a"?o.ca:o.cb,his=me=="a"?o.cb:o.ca,key=o.ca+"_"+o.cb,both=mine&&his,okm=both&&o["k"+me]==key,okh=both&&o["k"+ot]==key,nm=esc(me=="a"?o.bn:o.an),dn=Object.keys(S.dup).filter(n=>S.dup[n]>0).map(Number);
+ return`<button class="btn s" onclick="TO=null;render()">← Назад</button><h2>🤝 Обмен с ${nm} · #${esc(o[ot])}</h2><div class="box"><div class="t"><b>Ты отдаёшь</b><small>${mine?cn(mine):"Выбери карточку ниже"}</small></div></div><div class="box"><div class="t"><b>Ты получаешь</b><small>${his?cn(his):"Ждём, пока игрок выберет карточку"}</small></div></div>`
+ +(lk(o)?`<p class="tip">✅ Оба подтвердили. Карточки меняются…</p>`:`<h2>Твои дубликаты</h2>`+(dn.length?`<div class="chips">${dn.map(n=>`<button class="chip" onclick="putCard('${o.id}',${n})">№${n}<small>×${S.dup[n]}</small></button>`).join("")}</div>`:`<p class="tip">Нет других дубликатов для обмена.</p>`)+`<p class="tip">Выбранная карточка лежит в залоге, пока обмен не закончится.</p><button class="btn wide" ${both&&!okm?"":"disabled"} onclick="trOk('${o.id}')">${okm?"Ты подтвердил(а) · ждём игрока":"Подтвердить обмен"}</button><p class="tip">${both?(okh?"Игрок подтвердил(а)":"Игрок ещё не подтвердил(а)"):"Подтвердить можно, когда оба выбрали карточки"}. Если кто-то сменит карточку, подтверждения сбросятся.</p><button class="btn s wide" style="background:#ff6b6b" onclick="trX('${o.id}')">Отменить обмен</button>`)}
+function tradeH(){TS=tsig();
+ if(!DB)return`<div class="emp"><div>🤝</div>Нет связи<small>Проверь интернет, игра попробует снова сама</small></div>`;
+ const cur=TO&&TL.find(o=>o.id==TO);if(cur&&(cur.st=="on"||(cur.st=="x"&&lk(cur))))return tradeView(cur);TO=null;
+ const inc=TL.filter(o=>o.st=="req"&&o.b==S.code),out=TL.filter(o=>o.st=="req"&&o.a==S.code),act=TL.filter(o=>o.st=="on"||(o.st=="x"&&lk(o)));
+ return codeBox(1)+`<h2>➕ Предложить обмен</h2><div class="box"><input id="tqi" class="inp" style="flex:1;width:auto" type="text" inputmode="numeric" maxlength="5" placeholder="Код игрока" value="${esc(tq)}" oninput="tq=this.value"><button class="btn s" onclick="mkTrade()">Предложить</button></div><p class="tip">Игрок получит предложение. Если он согласится, вы оба выберете по карточке из дубликатов и подтвердите обмен.</p>`
+ +(inc.length?`<h2>📥 Тебе предлагают обмен</h2>`+inc.map(o=>`<div class="box"><div class="t"><b>${esc(o.an)} · #${esc(o.a)}</b><small>Хочет поменяться карточками</small></div><button class="btn s" onclick="trAns('${o.id}',0)">Отказать</button><button class="btn g s" onclick="trAns('${o.id}',1)">Согласиться</button></div>`).join(""):"")
+ +(act.length?`<h2>🔄 Идут обмены</h2>`+act.map(o=>{const me=o.a==S.code?"a":"b",ot=me=="a"?"b":"a";return`<div class="box"><div class="t"><b>${esc(me=="a"?o.bn:o.an)} · #${esc(o[ot])}</b><small>Выбирайте карточки и подтверждайте</small></div><button class="btn g s" onclick="TO='${o.id}';render()">Открыть</button></div>`}).join(""):"")
+ +(out.length?`<h2>📤 Ждут ответа</h2>`+out.map(o=>`<div class="box"><div class="t"><b>${esc(o.bn)} · #${esc(o.b)}</b><small>Игрок ещё не ответил</small></div><button class="btn s" onclick="trDel('${o.id}')">Отменить</button></div>`).join(""):"")
+ +(inc.length||act.length||out.length?"":`<p class="tip">Пока нет обменов</p>`)}
+// ---- код игрока и личный чат ----
+async function reg(){if(rg||!FBU)return;rg=1;try{if(!S.code){for(let i=0;i<6&&!S.code;i++){const c=""+(10000+Math.floor(Math.random()*90000));if(!(await api("players/"+c))){await api("players/"+c,"PUT",{u:ME,nm:S.nick||"Игрок",t:Date.now()});S.code=c;rd=1;save()}}}else if(!rd){await api("players/"+S.code,"PUT",{u:ME,nm:S.nick||"Игрок",t:Date.now()});rd=1}}catch(e){}rg=0}
+async function ensureMe(){if(!S.nick){const n=prompt("Как тебя зовут в игре?");if(!n||!n.trim())return 0;S.nick=n.trim().slice(0,16);save();rd=0}await reg();if(!S.code){toast("Не получилось получить код, попробуй ещё раз");return 0}return 1}
+function setNick(){const n=prompt("Твоё имя в игре",S.nick||"");if(!n||!n.trim())return;S.nick=n.trim().slice(0,16);save();rd=0;reg().then(render)}
+const codeBox=c=>`<div class="box"><div class="t"><b>Твой код: ${S.code?"#"+S.code:"…"}</b><small>${c?"Дай код другу, чтобы он нашёл тебя":esc(S.nick||"Игрок")+" · дай код другу, чтобы он нашёл тебя"}</small></div>${c?"":`<button class="btn s" onclick="setNick()">Имя</button>`}</div>`;
+const ur=()=>Object.keys(IB||{}).filter(c=>IB[c]&&IB[c].t>(S.seen[c]||0)).length;
+async function openDm(c){if(!ok5(c))return toast("Код — 5 цифр");if(!(await ensureMe()))return;if(c==S.code)return toast("Это твой код");try{const d=await api("players/"+c);if(!d)return toast("Игрок не найден");NM[c]=d.nm||"Игрок";openD(c)}catch(e){toast("Нет связи")}}
+function openD(c){CH=c;CHN=NM[c]||S.dms[c]||"";cf=1;tab=6;render();window.scrollTo(0,0)}
+function dlH(){const cs=[...new Set([...Object.keys(IB||{}),...Object.keys(S.dms)])].filter(ok5);cs.forEach(c=>NM[c]=(IB[c]&&IB[c].nm)||S.dms[c]||NM[c]||"Игрок");cs.sort((a,b)=>((IB[b]&&IB[b].t)||0)-((IB[a]&&IB[a].t)||0));return cs.length?`<h2>✉️ Личные чаты</h2>`+cs.map(c=>`<div class="box" onclick="openD('${c}')"><div class="t"><b>${esc(NM[c])} · #${c} ${IB[c]&&IB[c].t>(S.seen[c]||0)?"🔴":""}</b><small>${esc((IB[c]&&IB[c].x)||"Твой диалог")}</small></div></div>`).join(""):`<p class="tip">Пока нет чатов. Введи код друга, чтобы написать ему.</p>`}
+const msgH=x=>{const me=x.c==S.code,r=x.r&&typeof x.r=="object"?x.r:{},cnt=[0,0,0],mine=r[S.code];Object.keys(r).forEach(c=>{const i=+r[c];if(i>=0&&i<3&&i%1==0)cnt[i]++});const rh=cnt.map((n,i)=>n?`<span class="rx ${mine===i?"on":""}">${RX[i]} ${n}</span>`:"").join("");return`<div class="cb ${me?"me":""}" onclick="rxo('${x.k}')"><small>${esc(x.nm)}</small>${esc(x.x)}${rh?`<div class="rxs">${rh}</div>`:""}</div>`};
+function chatH(){if(!FBU||!DB)return`<div class="emp"><div>💬</div>Чат недоступен<small>Проверь интернет, игра попробует снова сама</small></div>`;setTimeout(cpull,0);
+ const top=codeBox()+`<div class="box"><input id="fcd" class="inp" style="flex:1;width:auto" type="text" inputmode="numeric" maxlength="5" placeholder="Код друга"><button class="btn s" onclick="openDm($('fcd').value.trim())">Написать</button></div>`;
+ if(!CH)return top+`<div id="dl">${dlH()}</div>`;
+ return top+`<h2>✉️ ${esc(CHN)} · #${esc(CH)}</h2><button class="btn s" style="margin-bottom:8px" onclick="CH='';cf=1;render()">← Все чаты</button><div class="cm" id="cmsgs"></div><p class="tip" style="margin:0 0 8px">Нажми на сообщение, чтобы поставить реакцию</p><div class="box"><input id="cin" class="inp" style="flex:1;width:auto" maxlength="200" placeholder="Сообщение…" onkeydown="if(event.key=='Enter')sendC()"><button class="btn s" onclick="sendC()">➤</button></div>`}
+async function cpull(){if(tab!=6||!DB||!FBU)return;const ch=CH;try{if(S.code)IB=(await api("inbox/"+S.code))||{};if(ch&&S.code){const d=await apq("dm/"+dk(ch),"orderBy=%22%24key%22&limitToLast=60")||{};if(ch!=CH)return;const m=$("cmsgs");if(m){LM={};const L=Object.keys(d).filter(k=>sid(k)&&d[k]&&d[k].x).map(k=>(LM[k]=d[k],{k,...d[k]}));const bot=cf||m.scrollHeight-m.scrollTop-m.clientHeight<60;m.innerHTML=L.length?L.map(msgH).join(""):`<p class="tip">Пока пусто, напиши первым</p>`;if(bot)m.scrollTop=m.scrollHeight;cf=0;S.seen[ch]=Math.max(Date.now(),(IB[ch]&&IB[ch].t)||0);save()}}const dl=$("dl");if(dl)dl.innerHTML=dlH()}catch(e){}}
+function rxo(k){openOv(`<h2 style="margin:0 0 10px;text-align:center;color:var(--text)">Реакция</h2><div class="r2g" style="grid-template-columns:repeat(3,1fr)">${RX.map((e,i)=>`<button class="btn" style="font-size:28px" onclick="rx('${k}',${i})">${e}</button>`).join("")}</div><button class="btn wide" onclick="closeOv()">Закрыть</button>`)}
+async function rx(k,i){closeOv();if(!CH||!(await ensureMe()))return;const cur=LM[k]&&LM[k].r&&typeof LM[k].r=="object"?LM[k].r[S.code]:undefined,p="dm/"+dk(CH)+"/"+k+"/r/"+S.code;try{if(cur===i)await api(p,"DELETE");else await api(p,"PUT",i)}catch(e){toast("Не получилось")}cf=0;cpull()}
+async function sendC(){const i=$("cin"),x=i.value.trim().slice(0,200);if(!x||!CH)return;if(!(await ensureMe()))return;i.value="";const m={c:S.code,nm:S.nick||"Игрок",x,t:Date.now()};try{await api("dm/"+dk(CH),"POST",m);await api("inbox/"+CH+"/"+S.code,"PUT",{nm:m.nm,t:m.t,x:x.slice(0,40)});S.dms[CH]=CHN;save()}catch(e){toast("Не отправилось");i.value=x}cf=1;cpull()}
+setInterval(cpull,3000);
+setInterval(()=>{if(tab==5&&TO&&DB)pull()},2000);
+
+setInterval(tick,400);render();setInterval(pull,6000);pull();
+if(away)toast("С возвращением! Созрело: "+away+" 🌾");
+</script></body></html>
