@@ -106,22 +106,6 @@ nav button{font-size:11px}
 .cb.me{align-self:flex-end;background:#7cfc9a40}.cb small{display:block;font-size:10px;color:var(--mut)}
 nav button{font-size:10px;padding:9px 1px}nav button b{font-size:18px}
 .rxs{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}.rx{font-size:12px;background:#0003;border-radius:10px;padding:1px 7px}.rx.on{background:#7cfc9a55}
-
-/* новые мутации */
-.plot.mg5{background:linear-gradient(160deg,#bff2ff77,#2a5a8acc)}
-.plot.mg6{background:linear-gradient(160deg,#ff9a3d88,#6a1a08cc)}
-.plot.mg7{background:radial-gradient(circle at 50% 30%,#ffe14a99,#2a2305)}
-.plot.mg8{background:linear-gradient(160deg,#cfd8ff55,#2a2f55dd)}
-.plot.mg9{background:radial-gradient(circle at 50% 30%,#e08bffcc,#2a0a3a)}
-.plot.mg10{background:radial-gradient(circle at 50% 30%,#fff7c8cc,#b8860b99 60%,#3a2a05)}
-.plot.mg5 .e{filter:hue-rotate(160deg) saturate(1.6) brightness(1.3) drop-shadow(0 0 7px #9fe3ff)}
-.plot.mg6 .e{filter:sepia(1) saturate(5) hue-rotate(-18deg) drop-shadow(0 0 9px #ff7a3d)}
-.plot.mg7 .e{filter:brightness(1.35) saturate(2) drop-shadow(0 0 9px #ffe14a)}
-.plot.mg8 .e{filter:grayscale(1) brightness(1.5) opacity(.8) drop-shadow(0 0 9px #cfd8ff)}
-.plot.mg9 .e{filter:hue-rotate(290deg) saturate(3) brightness(1.2) drop-shadow(0 0 10px #e08bff)}
-.plot.mg10 .e{animation:pulse 1.4s ease-in-out infinite alternate}.plot.ripe.mg10 .e{animation:bob .7s infinite alternate,pulse 1.4s ease-in-out infinite alternate}
-@keyframes pulse{from{filter:brightness(1.1) drop-shadow(0 0 6px #fff1a8)}to{filter:brightness(1.6) saturate(1.5) drop-shadow(0 0 16px #fff)}}
-.plot.mg5::after,.plot.mg6::after,.plot.mg7::after,.plot.mg8::after,.plot.mg9::after,.plot.mg10::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 28%,#fff 0 1px,#0000 3px),radial-gradient(circle at 82% 36%,#fff 0 1px,#0000 3px),radial-gradient(circle at 70% 78%,#fff 0 1.5px,#0000 4px),radial-gradient(circle at 26% 72%,#fff 0 1px,#0000 3px);animation:tw 1.6s ease-in-out infinite alternate}
 </style></head><body>
 <header><h1>🌿 Сад Чудес</h1><div style="display:flex;align-items:center;gap:10px"><div class="money" id="mon"></div><button class="help" onclick="help()" aria-label="Помощь">?</button></div></header>
 <main id="main"></main><nav id="nav"></nav>
@@ -130,7 +114,7 @@ nav button{font-size:10px;padding:9px 1px}nav button b{font-size:18px}
 // [эмодзи, название, цена семени, секунд роста, цена продажи]
 const PL=[["🥕","Морковь",3,15,14],["🥬","Салат",6,20,22],["🌽","Кукуруза",10,30,36],["🍅","Помидор",18,45,62],["🥔","Картошка",30,60,105],["🍓","Клубника",50,80,170],["🍆","Баклажан",80,100,270],["🥦","Брокколи",130,120,440],["🎃","Тыква",200,150,680],["🍉","Арбуз",320,180,1050],["🌻","Подсолнух",500,210,1650],["🍇","Виноград",800,240,2600],["🌶️","Перец",1200,270,3900],["🍄","Гриб",1900,300,6100],["🍋","Лимон",3000,330,9600],["🍑","Персик",4800,360,15000],["🌷","Тюльпан",7500,400,23500],["🌹","Роза",12000,440,38000],["🪻","Лаванда",19000,480,60000],["🌺","Гибискус",30000,520,96000],["🌸","Сакура",48000,560,155000],["🪷","Лотос",80000,600,255000],["🌵","Кактус",130000,640,420000],["🍀","Клевер удачи",220000,700,700000],["🥭","Манго",350000,740,0],["🍍","Ананас",560000,780,0],["🥥","Кокос",900000,820,0],["🍒","Вишня",1450000,860,0],["🍐","Груша",2300000,900,0],["🥝","Киви",3700000,940,0],["🥑","Авокадо",6000000,980,0],["🍈","Дыня",9500000,1020,0],["🌰","Каштан",15000000,1060,0],["🍊","Апельсин",24000000,1100,0],["🌾","Рис",38000000,1140,0],["🎋","Бамбук",60000000,1180,0],["🌴","Пальма",95000000,1220,0],["🍁","Клён",150000000,1260,0],["💐","Букет",240000000,1300,0],["🌳","Древо жизни",400000000,1350,0]];
 // мутации: [название, эмодзи, множитель цены, шанс %, цвет]
-const MUT=[["Огромное","📏",1.2,6,"#6be675"],["Золотое","✨",1.5,2.5,"#ffd54a"],["Алмазное","💎",2,1,"#6fe3ff"],["Радужное","🌈",3,.35,"#ff7ad9"],["Космическое","🌌",5,.1,"#b45cff"],["Ледяное","❄️",1.3,4,"#9fe3ff"],["Огненное","🔥",1.7,1.8,"#ff7a3d"],["Электрическое","⚡",2.5,.6,"#ffe14a"],["Призрачное","👻",4,.2,"#cfd8ff"],["Кристальное","🔮",8,.05,"#e08bff"],["Божественное","👑",15,.02,"#fff1a8"]];
+const MUT=[["Огромное","📏",1.2,6,"#6be675"],["Золотое","✨",1.5,2.5,"#ffd54a"],["Алмазное","💎",2,1,"#6fe3ff"],["Радужное","🌈",3,.35,"#ff7ad9"],["Космическое","🌌",5,.1,"#b45cff"]];
 const R=["Обычная","Необычная","Редкая","Эпическая","Легендарная","Мифическая","Божественная"],RG=[[1,30],[31,55],[56,75],[76,88],[89,95],[96,99],[100,100]],WT=[1,2,4,8,16,32,100],SY=["●","◆","★","★★","★★★","✦✦✦","♛"],AB=["Росток удачи","Щедрый урожай","Золотой колос","Королевский сбор","Звёздный дождь","Метеоритный рост","Чудо сада"];
 const PACK={n:"Пак чудес",e:"🎁",c:500,w:[45,27,15,8,3.5,1.3,.2]},DW=[75,20,5,0,0,0,0],PR={fe:100},RC=["#8f9cab","#2fbf5b","#2f8cf5","#9b4dff","#f5a300","#ff3d6e","#e6b800"];
 const U=["","один","два","три","четыре","пять","шесть","семь","восемь","девять","десять","одиннадцать","двенадцать","тринадцать","четырнадцать","пятнадцать","шестнадцать","семнадцать","восемнадцать","девятнадцать"],T=["","","двадцать","тридцать","сорок","пятьдесят","шестьдесят","семьдесят","восемьдесят","девяносто"];
@@ -152,7 +136,7 @@ const fmt=n=>{n=Math.floor(n);if(n<10000)return n.toLocaleString("ru");for(const
 const dur=s=>s>=60?(s/60|0)+"м"+(s%60?" "+s%60+"с":""):s+"с";
 const rar=n=>RG.findIndex(g=>n<=g[1]);
 const tm=i=>PL[i][3]*1000,rate=pl=>(1+.1*S.spd)*(pl.f?2:1);
-const mm=m=>MUT.map((_,k)=>k).filter(k=>m>>k&1),mmul=m=>mm(m).reduce((a,k)=>a*MUT[k][2],1),mtop=m=>mm(m).reduce((a,k)=>MUT[k][2]>=MUT[a][2]?k:a);
+const mm=m=>MUT.map((_,k)=>k).filter(k=>m>>k&1),mmul=m=>mm(m).reduce((a,k)=>a*MUT[k][2],1),mtop=m=>31-Math.clz32(m);
 const val=(i,f,m)=>PL[i][4]*S.mk.x[i]*(1+.05*S.prc)*(f?1.15:1)*(m?mmul(m):1);
 const sc=i=>Math.max(1,Math.round(PL[i][2]*(1-.02*S.dsc)));
 const upc=(b,l)=>Math.round(b*Math.pow(1.7,l)),plotCost=()=>Math.round(150*Math.pow(2.3,S.plots.length-2));
