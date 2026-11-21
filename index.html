@@ -121,11 +121,11 @@ const U=["","один","два","три","четыре","пять","шесть",
 const nw=n=>{const s=n==100?"сто":n<20?U[n]:T[n/10|0]+(n%10?" "+U[n%10]:"");return s[0].toUpperCase()+s.slice(1)};
 const isP=n=>{if(n<2)return 0;for(let d=2;d*d<=n;d++)if(n%d==0)return 0;return 1};
 function fact(n){const q=Math.sqrt(n);if(n==100)return"Целая сотня — вершина сада";if(isP(n))return"Простое: делится лишь на 1 и на себя";if(q%1==0)return`Квадрат: ${q} × ${q}`;if([8,13,21,34,55,89].includes(n))return"Число Фибоначчи — спираль природы";if([6,10,15,28,45,66,78,91].includes(n))return"Треугольное число";if(n%11==0)return"Зеркальное число";return"Кратно "+[2,3,5,7].find(d=>n%d==0)}
-PL.forEach((p,i)=>p[4]=Math.round(p[2]*(1.7-i*.008)));
+PL.forEach((p,i)=>p[4]=Math.round(p[2]*(1.25-i*.004)));
 // ---- состояние ----
 let S={m:60,cards:{},s:{0:4},sel:0,fe:3,h:{},dup:{},ct:0,plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,dsc:0,nw:[],esc:{},mc:{}},K="sadchudes5",tab=0,SG="",sv=0;
 try{["sadchudes2","sadchudes3","sadchudes4"].forEach(k=>localStorage.removeItem(k));const x=localStorage.getItem(K);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
-if(!S.tr)S.tr={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
+if(!S.ach)S.ach={};S.pg|=0;S.tot|=0;S.qd|=0;if(!S.tr)S.tr={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
 if(!S.mk||!S.mk.x||S.mk.x.length!=PL.length)S.mk={t:Date.now(),x:PL.map(()=>1)};
 if(S.mv!=3){S.plots.forEach(pl=>{if(pl.p!=null)pl.m=pl.m>=0?1<<pl.m:0});const nh={};for(const k in S.h){const a=k.split(".").map(Number);a[2]=a[2]>=0?1<<a[2]:0;const nk=a.join(".");nh[nk]=(nh[nk]||0)+S.h[k]}S.h=nh;S.mv=3}
 S.plots=S.plots.map(pl=>pl.p==null?{p:null}:{p:pl.p,g:pl.g||0,f:pl.f?1:0,m:pl.m|0,l:pl.l||Date.now()});
@@ -135,16 +135,16 @@ const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}},$=i=>d
 const fmt=n=>{n=Math.floor(n);if(n<10000)return n.toLocaleString("ru");for(const[v,s]of[[1e12,"трлн"],[1e9,"млрд"],[1e6,"млн"],[1e3,"тыс"]])if(n>=v){const q=n/v;return(q<100?q.toFixed(1).replace(/\.0$/,""):Math.floor(q)+"").replace(".",",")+" "+s}};
 const dur=s=>s>=60?(s/60|0)+"м"+(s%60?" "+s%60+"с":""):s+"с";
 const rar=n=>RG.findIndex(g=>n<=g[1]);
-const tm=i=>PL[i][3]*1000,rate=pl=>(1+.1*S.spd)*(pl.f?2:1);
+const tm=i=>PL[i][3]*1000,rate=pl=>(1+.1*S.spd)*evm("grow")*(pl.f?2:1);
 const mm=m=>MUT.map((_,k)=>k).filter(k=>m>>k&1),mmul=m=>mm(m).reduce((a,k)=>a*MUT[k][2],1),mtop=m=>31-Math.clz32(m);
-const val=(i,f,m)=>PL[i][4]*S.mk.x[i]*(1+.05*S.prc)*(f?1.15:1)*(m?mmul(m):1);
-const sc=i=>Math.max(1,Math.round(PL[i][2]*(1-.02*S.dsc)));
+const val=(i,f,m)=>PL[i][4]*S.mk.x[i]*(1+.05*S.prc)*(1+.25*S.pg)*evm("price")*evm("one",i)*(f?1.15:1)*(m?mmul(m):1);
+const sc=i=>Math.max(1,Math.round(PL[i][2]*(1-.02*S.dsc)*evm("sale")));
 const upc=(b,l)=>Math.round(b*Math.pow(1.7,l)),plotCost=()=>Math.round(150*Math.pow(2.3,S.plots.length-2));
-const luck=f=>(1+.1*S.lck)*(f?3:1);
+const luck=f=>(1+.1*S.lck)*evm("luck")*(f?3:1);
 function rollMut(l,b){b=b|0;let c=mm(b).length;for(let k=0;k<MUT.length;k++){if(b>>k&1)continue;if(Math.random()*100<Math.min(90,MUT[k][3]*l*(1+2*c))){b|=1<<k;c++}}return b}
 function toast(t){const e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display="none",2400)}
-const no=(q,t)=>{if(!q)toast(t);return 0},vib=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}};
-function fx(i,t,col){if(tab!=0)return;const el=document.querySelectorAll(".plot")[i];if(!el)return;const r=el.getBoundingClientRect(),d=document.createElement("div");d.className="fl";d.textContent=t;d.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+r.height/3}px;color:${col}`;document.body.appendChild(d);setTimeout(()=>d.remove(),1100)}
+const no=(q,t)=>{if(!q)toast(t);return 0},vib=n=>{beep(Array.isArray(n)?880:n>20?330:520,Array.isArray(n)?.35:.12);try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}};
+function fx(i,t,col){if(tab!=0)return;const el=document.querySelectorAll(".plot")[i];if(!el)return;const r=el.getBoundingClientRect(),d=document.createElement("div");d.className="fl";d.textContent=t;d.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+r.height/3}px;color:${col}`;document.body.appendChild(d);setTimeout(()=>d.remove(),1100);if(col!="#ffd54a")for(let j=0;j<6;j++){const s=d.cloneNode();s.textContent="✨";s.style.left=r.left+r.width/2+(Math.random()-.5)*80+"px";s.style.top=r.top+r.height/3+(Math.random()-.5)*40+"px";document.body.appendChild(s);setTimeout(()=>s.remove(),1100)}}
 function adv(pl,now){if(pl.p==null)return;const dt=Math.max(0,now-(pl.l||now));pl.l=now;pl.g=Math.min(tm(pl.p),(pl.g||0)+dt*rate(pl))}
 const kind=pl=>pl.p==null?"e":pl.g>=tm(pl.p)-1?"r":"d";
 const sg=()=>S.plots.map(pl=>kind(pl)+pl.p+"."+pl.m+(pl.f?1:0)+(pl.p!=null&&pl.g/tm(pl.p)<.35?0:1)).join()+"|"+S.sel;
@@ -176,15 +176,15 @@ function gardenH(){SG=sg();
 <p class="tip">Выбери семя в инвентаре и нажми на пустую грядку. Нажми на растущее растение — удобришь его. Спелое нажми, чтобы собрать; продавать урожай нужно на вкладке «Продажа». Подробности — в «?» сверху.</p>`}
 function sel(i){S.sel=i;save();render()}
 function pc(i){const pl=S.plots[i],k=kind(pl);if(k=="r")harv(i);else if(k=="d")fz(i);else if(plant(i)){save();render()}else toast("Нет семян — купи в магазине 🛒")}
-function plant(i){ensureSel();const id=S.sel;if(id==null)return 0;S.s[id]--;S.plots[i]={p:id,g:0,f:0,m:rollMut(luck(0),0),l:Date.now()};ensureSel();return 1}
+function plant(i){ensureSel();const id=S.sel;if(id==null)return 0;S.s[id]--;qp("plant");S.plots[i]={p:id,g:0,f:0,m:rollMut(luck(0),0),l:Date.now()};ensureSel();return 1}
 function fz(i){const pl=S.plots[i];if(pl.p==null||kind(pl)=="r")return 0;if(pl.f){toast("Уже удобрено 🧪");return 0}
  if(S.fe<1){toast("Нет удобрения — купи в магазине 🧪");return 0}
- adv(pl,Date.now());S.fe--;pl.f=1;pl.m=rollMut(luck(1),pl.m|0);fx(i,"🧪 ×2","#7cfc9a");vib(15);save();render();return 1}
-function hv(i){const pl=S.plots[i],m=pl.m|0,k=pl.p+"."+(pl.f?1:0)+"."+m,q=Math.random()<.04*S.yld?2:1;S.h[k]=(S.h[k]||0)+q;mm(m).forEach(x=>S.mc[x]=(S.mc[x]||0)+1);fx(i,"+"+PL[pl.p][0]+(q>1?"×2":""),m?MUT[mtop(m)][4]:"#ffd54a");S.plots[i]={p:null};return[q,m]}
+ adv(pl,Date.now());S.fe--;pl.f=1;qp("fert");pl.m=rollMut(luck(1),pl.m|0);fx(i,"🧪 ×2","#7cfc9a");vib(15);save();render();return 1}
+function hv(i){const pl=S.plots[i],m=pl.m|0,k=pl.p+"."+(pl.f?1:0)+"."+m,q=Math.random()<.04*S.yld+evm("yield")-1?2:1;S.h[k]=(S.h[k]||0)+q;S.tot=(S.tot|0)+q;qp("harvest",q);if(m)qp("mut");mm(m).forEach(x=>S.mc[x]=(S.mc[x]||0)+1);fx(i,"+"+PL[pl.p][0]+(q>1?"×2":""),m?MUT[mtop(m)][4]:"#ffd54a");S.plots[i]={p:null};return[q,m]}
 const mtxt=m=>m?" · "+mm(m).map(k=>MUT[k][1]+" "+MUT[k][0]).join(" + ")+"!":"";
 function harv(i){const p=PL[S.plots[i].p],[q,m]=hv(i);toast("Собрано: "+p[0]+" "+p[1]+(q>1?" ×2 🧺":"")+mtxt(m));vib(m?[20,40,20]:15);save();render()}
-function sellAll(){let tot=0,n=0;for(const k of Object.keys(S.h)){const q=S.h[k];if(!(q>0))continue;const[p,f,m]=k.split(".").map(Number);tot+=val(p,f,m)*q;n+=q;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));delete S.h[k]}if(!n)return;S.m+=tot;toast("Продано: "+n+" шт · 💰"+fmt(tot));vib(25);save();render()}
-function sell(k,all){const n=S.h[k]||0;if(!n)return;const[p,f,m]=k.split(".").map(Number),q=all?n:1,v=val(p,f,m)*q;S.h[k]=n-q;if(S.h[k]<=0)delete S.h[k];S.m+=v;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));toast("Продано: "+PL[p][0]+" ×"+q+" · 💰"+fmt(v));vib(15);save();render()}
+function sellAll(){let tot=0,n=0;for(const k of Object.keys(S.h)){const q=S.h[k];if(!(q>0))continue;const[p,f,m]=k.split(".").map(Number);tot+=val(p,f,m)*q;n+=q;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));delete S.h[k]}if(!n)return;S.m+=tot;qp("sell",n);toast("Продано: "+n+" шт · 💰"+fmt(tot));vib(25);save();render()}
+function sell(k,all){const n=S.h[k]||0;if(!n)return;const[p,f,m]=k.split(".").map(Number),q=all?n:1,v=val(p,f,m)*q;S.h[k]=n-q;if(S.h[k]<=0)delete S.h[k];S.m+=v;qp("sell",q);S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));toast("Продано: "+PL[p][0]+" ×"+q+" · 💰"+fmt(v));vib(15);save();render()}
 // ---- магазин ----
 function shopH(){const b=(l,c,f)=>`<button class="btn s" ${S.m<c?"disabled":""} onclick="${f}">${l} 💰${fmt(c)}</button>`;
  let h="";
@@ -203,7 +203,7 @@ function colH(){const dn=Object.keys(S.dup).filter(n=>S.dup[n]>0),dt=dn.reduce((
  if(S.ct)return tabs+(dn.length?`<div class="cards">`+dn.map(n=>`<div style="position:relative" onclick="zoom(${n})"><span class="new" style="background:#2f8cf5">×${S.dup[n]}</span>${C(+n,1)}</div>`).join("")+"</div>":`<p class="tip">Папка пуста. Когда выпадет карточка, которая у тебя уже есть, она попадёт сюда.</p>`);
  let h=tabs+`<p class="tip" style="margin:0 0 4px">Карточки нужны только для коллекции. Нажми на карточку, чтобы рассмотреть её.</p>`;
  RG.forEach((g,i)=>{const l=[];for(let n=g[0];n<=g[1];n++)l.push(n);h+=`<h2 class="r${i}">${R[i]} · №${g[0]}${g[1]>g[0]?"–"+g[1]:""} · ${l.filter(n=>S.cards[n]).length}/${l.length}</h2><div class="cards">`+l.map(n=>S.cards[n]?`<div onclick="zoom(${n})">${C(n,1,S.nw.includes(n)?tagH("NEW"):"")}</div>`:C(n,0)).join("")+"</div>"});return h}
-function upH(){const a=upc(100,S.spd),b=upc(250,S.prc),d=upc(400,S.lck),y=upc(300,S.yld),e=upc(200,S.dsc),c=plotCost(),row=(em,t,s,cost,fn,max)=>`<div class="box"><div class="big">${em}</div><div class="t"><b>${t}</b><small>${s}</small></div><button class="btn g s" ${max||S.m<cost?"disabled":""} onclick="${fn}">${max?"MAX":"💰"+fmt(cost)}</button></div>`;
+function upH0(){const a=upc(100,S.spd),b=upc(250,S.prc),d=upc(400,S.lck),y=upc(300,S.yld),e=upc(200,S.dsc),c=plotCost(),row=(em,t,s,cost,fn,max)=>`<div class="box"><div class="big">${em}</div><div class="t"><b>${t}</b><small>${s}</small></div><button class="btn g s" ${max||S.m<cost?"disabled":""} onclick="${fn}">${max?"MAX":"💰"+fmt(cost)}</button></div>`;
  return"<h2>Улучшения</h2>"+row("⚡","Теплица · ур. "+S.spd+"/20","Рост быстрее на 10% за уровень (сейчас +"+S.spd*10+"%)",a,`up('spd',${a})`,S.spd>=20)+row("💎","Золотая лейка · ур. "+S.prc+"/20","Цена урожая +5% за уровень (сейчас +"+S.prc*5+"%)",b,`up('prc',${b})`,S.prc>=20)+row("🍀","Удача · ур. "+S.lck+"/25","Шанс мутаций +10% за уровень (сейчас +"+S.lck*10+"%)",d,`up('lck',${d})`,S.lck>=25)+row("🧺","Урожайность · ур. "+S.yld+"/15","Шанс удвоить урожай +4% за уровень (сейчас "+S.yld*4+"%)",y,`up('yld',${y})`,S.yld>=15)+row("🏷️","Скидка на семена · ур. "+S.dsc+"/15","Семена дешевле на 2% за уровень (сейчас −"+S.dsc*2+"%)",e,`up('dsc',${e})`,S.dsc>=15)+row("🪴","Новая грядка · "+S.plots.length+"/12","Больше растений одновременно",c,"newPlot()",S.plots.length>=12)}
 const UM={spd:20,prc:20,lck:25,yld:15,dsc:15};
 function up(k,c){if(S.m>=c&&S[k]<UM[k]){S.m-=c;S[k]++;save();render()}}
@@ -211,14 +211,14 @@ function newPlot(){const c=plotCost();if(S.m>=c&&S.plots.length<12){S.m-=c;S.plo
 function help(){const tot=PACK.w.reduce((a,b)=>a+b,0),p=x=>+(x/tot*100).toFixed(2);
  openOv(`<h2 style="margin:0 0 4px;font-size:18px;color:var(--text)">❓ Помощь</h2><h2>🌱 Как играть</h2><p class="hp">Купи семена в магазине — они появятся в инвентаре над грядками. Выбери семя и нажми на пустую грядку, чтобы посадить. Когда растение созреет, нажми на него — урожай попадёт на склад. Продай его на вкладке «Продажа» за монеты 💰. Растения растут, даже когда игра закрыта.</p><h2>🧪 Удобрение</h2><p class="hp">Нажми на растущее растение, чтобы удобрить его: рост ×2, урожай +15%, шанс мутации ×3. Удобрения покупаются в магазине и тратятся вручную.</p><h2>🧬 Мутации</h2><p class="hp">Когда растение сажают или удобряют, оно может мутировать — тогда цена продажи растёт. Мутаций может быть сразу несколько: каждая выпавшая мутация втрое повышает шанс следующих, а цены мутаций перемножаются.</p><div class="mut">${MUT.map((m,k)=>`<div class="mi" style="--mc:${m[4]}"><span>${m[1]}</span><b>${m[0]}</b><small>цена ×${m[2]} · шанс ${+(m[3]*luck(0)).toFixed(2)}%${S.mc[k]?" · найдено "+S.mc[k]:""}</small></div>`).join("")}</div><h2>📈 Цены</h2><p class="hp">Цены на рынке меняются: то растут, то падают, а потом возвращаются к норме. Продавай, когда дорого! Если продать много сразу, цена на этот урожай немного просядет.</p><h2>🃏 Карточки</h2><p class="hp">В магазине продаётся пак чудес — 3 числа за раз. Выпасть может любое из 100 чисел, шанс зависит от редкости. Карточки ничего не делают — они нужны только для коллекции. Карточки выпадают только из паков. Повторные карточки попадают в папку «Дубликаты». Значок NEW стоит на новых карточках из последнего пака или обмена.</p><div class="mut">${R.map((r,i)=>`<div class="mi" style="--mc:${RC[i]}"><b>${r}</b><span>№${RG[i][0]}${RG[i][1]>RG[i][0]?"–"+RG[i][1]:""}</span><small>шанс ${p(PACK.w[i])}%</small></div>`).join("")}</div><h2>🤝 Обмен</h2><p class="hp">Введи код друга и предложи обмен. Если друг согласится, вы оба выберете по карточке из дубликатов. Когда оба подтвердите, карточки поменяются. Выбранная карточка лежит в залоге, пока обмен не закончится. Если кто-то сменит карточку, подтверждения сбросятся.</p><h2>⬆️ Улучшения</h2><p class="hp">⚡ Теплица — быстрее рост. 💎 Золотая лейка — дороже урожай. 🍀 Удача — чаще мутации. 🪴 Новая грядка — больше мест для посадки (до 12). 🧺 Урожайность — шанс удвоить урожай. 🏷️ Скидка — дешевле семена.</p><button class="btn wide" onclick="closeOv()">Понятно</button>`)}
 function render(){ensureSel();const hc=Object.values(S.h).reduce((a,b)=>a+b,0);const c=$("chips"),x=c?c.scrollLeft:0;
- $("mon").textContent="💰 "+fmt(S.m);$("main").innerHTML=[gardenH,shopH,marketH,colH,upH,tradeH,chatH][tab]();
+ $("mon").textContent="💰 "+fmt(S.m);$("main").innerHTML=(tab==0||tab==2?evH():"")+[gardenH,shopH,marketH,colH,upH,tradeH,chatH][tab]();
  $("nav").innerHTML=[["🌱","Сад"],["🛒","Магазин"],["💰","Продажа"],["🃏","Карточки"],["⬆️","Улучшения"],["🤝","Обмен"],["💬","Чат"]].map((t,i)=>`<button class="${i==tab?"on":""}" onclick="go(${i})"><b>${t[0]}</b>${t[1]}${i==2&&hc?`<span class="nb">${hc>99?"99+":hc}</span>`:""}${i==5&&tn()?`<span class="nb">${tn()}</span>`:""}${i==6&&ur()?`<span class="nb">${ur()}</span>`:""}</button>`).join("");
  const c2=$("chips");if(c2)c2.scrollLeft=x}
 function go(i){tab=i;render();window.scrollTo(0,0)}
 function mkStep(){const k=S.mk;let n=Math.min(40,Math.floor((Date.now()-k.t)/30000));if(n<1)return 0;k.t=Date.now();
  while(n--)k.x=k.x.map(x=>{let y=x+(1-x)*.12+(Math.random()-.5)*.22;const r=Math.random();if(r<.03)y=1.3+Math.random()*.2;else if(r<.06)y=.5+Math.random()*.1;return Math.min(1.6,Math.max(.45,y))});return 1}
 const news=()=>{const u=[],d=[];S.mk.x.forEach((x,i)=>{if(x>=1.4)u.push(PL[i][0]+" ×"+x.toFixed(1));else if(x<=.7)d.push(PL[i][0]+" ×"+x.toFixed(1))});return`<div class="news">${u.length?`<div>🔥 Высокий спрос: ${u.join(" ")}</div>`:""}${d.length?`<div>📉 Цены упали: ${d.join(" ")}</div>`:""}${u.length||d.length?"":"<div>📊 Цены держатся около нормы</div>"}</div>`};
-function tick(){if(mkStep()){save();if((tab==2||tab==0)&&!$("ov").classList.contains("on"))render()}const now=Date.now();S.plots.forEach(pl=>adv(pl,now));
+function tick(){xtick();if(mkStep()){save();if((tab==2||tab==0)&&!$("ov").classList.contains("on"))render()}const now=Date.now();S.plots.forEach(pl=>adv(pl,now));
  if(tab==0&&!$("ov").classList.contains("on")){if(sg()!=SG)render();else S.plots.forEach((pl,i)=>{if(pl.p==null||kind(pl)=="r")return;const b=tm(pl.p),e=$("e"+i);if(!e)return;$("b"+i).style.width=pl.g/b*100+"%";$("t"+i).textContent=PL[pl.p][1]+" · "+dur(Math.ceil((b-pl.g)/rate(pl)/1000));e.style.fontSize=esz(pl,pl.g/b)+"px"})}
  if(now-sv>4000){save();sv=now}}
 document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest(".zoom .card");if(!c)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(700px) rotateY(${x*20}deg) rotateX(${-y*20}deg)`});
@@ -289,6 +289,33 @@ async function sendC(){const i=$("cin"),x=i.value.trim().slice(0,200);if(!x||!CH
 setInterval(cpull,3000);
 setInterval(()=>{if(tab==5&&TO&&DB)pull()},2000);
 
+// ---- v2: события, задания, достижения, перерождение, звук ----
+const EVK=[["🎉 Праздник урожая","цены ×1.5 на всё","price",1.5],["⭐ Ярмарка","цена ×2.5 на ","one",2.5],["🌧️ Дождь","рост быстрее ×1.5","grow",1.5],["🍀 Туман удачи","шанс мутаций ×2","luck",2],["💎 Золотой час","цены ×2 на всё","price",2],["🏷️ Распродажа","семена −40%","sale",.6],["🧺 Богатый урожай","шанс удвоить урожай +30%","yield",1.3]];
+function evm(t,i){const v=S.ev;if(!v||v.e<Date.now())return 1;const e=EVK[v.k];return e[2]==t&&(t!="one"||v.p==i)?e[3]:1}
+function evH(){const v=S.ev;if(!v||v.e<Date.now())return"";const e=EVK[v.k];return`<div class="news" style="color:#ffd54a">${e[0]}: ${e[1]}${v.k==1?PL[v.p][0]+" "+PL[v.p][1]:""} · ещё ${dur(Math.ceil((v.e-Date.now())/1000))}</div>`}
+let AX=null,EVR=0;
+function beep(f,d){if(S.snd===0)return;d=d||.15;try{AX=AX||new(window.AudioContext||window.webkitAudioContext)();const o=AX.createOscillator(),g=AX.createGain(),n=AX.currentTime;o.type="triangle";o.frequency.value=f;g.gain.setValueAtTime(.08,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g);g.connect(AX.destination);o.start(n);o.stop(n+d)}catch(e){}}
+const QT=[["harvest","🌾","Собери урожай",[5,8,12]],["sell","💰","Продай урожай",[6,10,15]],["plant","🌱","Посади растения",[4,6,8]],["mut","🧬","Собери мутантов",[1,2,3]],["fert","🧪","Удобри растения",[2,3,4]]];
+function qp(k,n){if(!S.q)return;S.q.l.forEach(q=>{if(q.k==k&&!q.c)q.n=Math.min(q.g,q.n+(n||1))})}
+function qroll(){const d=new Date().toDateString();if(S.q&&S.q.d==d)return;const a=QT.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,3);S.q={d,l:a.map(i=>({k:QT[i][0],i,g:QT[i][3][Math.random()*3|0],n:0,c:0}))}}
+const qr=()=>Math.max(200,Math.round(S.m*.08));
+function qclaim(j){const q=S.q.l[j];if(!q||q.c||q.n<q.g)return;q.c=1;S.m+=qr();S.fe+=2;S.qd=(S.qd|0)+1;toast("🎯 Задание выполнено! +💰"+fmt(qr())+" +🧪2");beep(660,.3);save();render()}
+function dclaim(){const d=new Date().toDateString(),y=new Date(Date.now()-864e5).toDateString(),l=S.dl||{};if(l.d==d)return;const s=l.d==y?(l.s|0)+1:1,r=Math.max(300,Math.round(S.m*.03))*Math.min(s,7);S.dl={d,s};S.m+=r;S.fe+=Math.min(s,7);toast("🎁 День "+s+": +💰"+fmt(r)+" +🧪"+Math.min(s,7));beep(660,.4);save();render()}
+function dbH(){const l=S.dl||{},ok=l.d!=new Date().toDateString();return`<div class="box"><div class="big">🎁</div><div class="t"><b>Ежедневный бонус · серия ${l.s|0}</b><small>Заходи каждый день: награда растёт до 7 дней подряд</small></div><button class="btn g s" ${ok?"":"disabled"} onclick="dclaim()">${ok?"Забрать":"✔"}</button></div>`}
+function qH(){qroll();return dbH()+"<h2>🎯 Задания дня</h2>"+S.q.l.map((q,j)=>{const t=QT[q.i];return`<div class="box"><div class="big">${t[1]}</div><div class="t"><b>${t[2]}: ${q.n}/${q.g}</b><small>Награда: 💰${fmt(qr())} + 🧪×2</small></div><button class="btn g s" ${q.c||q.n<q.g?"disabled":""} onclick="qclaim(${j})">${q.c?"✔":"Забрать"}</button></div>`}).join("")+`<p class="tip">Новые задания каждый день. Звук: <button class="chip" onclick="S.snd=S.snd===0?1:0;save();render()">${S.snd===0?"🔇 выкл":"🔊 вкл"}</button></p>`}
+const AC=[["🌾","Первый урожай","Собери 1 урожай",()=>S.tot>=1],["🧺","Фермер","Собери 100 урожаев",()=>S.tot>=100],["🚜","Агроном","Собери 1000 урожаев",()=>S.tot>=1000],["🃏","Коллекционер","Собери 25 карточек",()=>Object.keys(S.cards).length>=25],["📚","Архивариус","Собери все 100 карточек",()=>Object.keys(S.cards).length>=100],["🧬","Мутант!","Получи любую мутацию",()=>Object.keys(S.mc).length>=1],["🌌","Все мутации","Найди все 5 мутаций",()=>Object.keys(S.mc).length>=5],["🪴","Большой сад","Открой 8 грядок",()=>S.plots.length>=8],["💰","Миллионер","Накопи 💰1 млн",()=>S.m>=1e6],["🏦","Миллиардер","Накопи 💰1 млрд",()=>S.m>=1e9],["🎯","Исполнитель","Выполни 10 заданий",()=>S.qd>=10],["♻️","Новая жизнь","Сделай перерождение",()=>S.pg>=1],["🌿","Огородник","Собери 500 урожаев",()=>S.tot>=500],["🧬","Охотник за мутациями","Найди 3 вида мутаций",()=>Object.keys(S.mc).length>=3],["🃏","Любитель карточек","Собери 50 карточек",()=>Object.keys(S.cards).length>=50],["🪴","Огромный сад","Открой все 12 грядок",()=>S.plots.length>=12],["💎","Триллионер","Накопи 💰1 трлн",()=>S.m>=1e12],["🎯","Мастер заданий","Выполни 50 заданий",()=>S.qd>=50],["♻️","Опытный","Сделай 3 перерождения",()=>S.pg>=3],["🤖","Автоматизация","Купи автосбор",()=>!!S.auto]];
+const acH=()=>`<h2>🏆 Достижения ${Object.keys(S.ach).length}/${AC.length}</h2>`+AC.map((a,i)=>`<div class="box" style="${S.ach[i]?"":"opacity:.5"}"><div class="big">${S.ach[i]?a[0]:"🔒"}</div><div class="t"><b>${a[1]}</b><small>${a[2]}</small></div></div>`).join("");
+const pgNeed=()=>Math.round(1e6*Math.pow(4,S.pg|0));
+function pgH(){const n=pgNeed(),ok=S.m>=n;return`<h2>♻️ Перерождение</h2><div class="box"><div class="big">♻️</div><div class="t"><b>Перерождений: ${S.pg|0}</b><small>Сейчас цена урожая +${25*(S.pg|0)}%. Сбросятся деньги, семена, грядки и улучшения. Останутся карточки, достижения и автосбор. Каждое перерождение даёт ещё +25% к цене навсегда.</small></div></div><button class="btn g wide" ${ok?"":"disabled"} onclick="rebirth()">${ok?"Переродиться":"Нужно 💰"+fmt(n)}</button>`}
+function rebirth(){if(S.m<pgNeed()||!confirm("Сбросить прогресс ради бонуса +25% к цене навсегда?"))return;S.pg=(S.pg|0)+1;Object.assign(S,{m:60,s:{0:4},sel:0,fe:3,h:{},plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,dsc:0});S.mk={t:Date.now(),x:PL.map(()=>1)};ensureSel();beep(300,.6);save();render()}
+function autoRow(){const c=5000;return`<div class="box"><div class="big">🤖</div><div class="t"><b>Автосбор${S.auto?" · куплен":""}</b><small>Спелые растения собираются сами и сразу попадают на склад</small></div><button class="btn g s" ${S.auto||S.m<c?"disabled":""} onclick="if(S.m>=${c}){S.m-=${c};S.auto=1;save();render()}">${S.auto?"✔":"💰"+fmt(c)}</button></div>`}
+function upH(){const u=S.ut|0,tb=["⬆️ Улучшения","🎯 Задания","🏆 Награды","♻️ Перерождение"].map((x,i)=>`<button class="chip ${u==i?"on":""}" onclick="S.ut=${i};render()">${x}</button>`).join("");return`<div class="chips">${tb}</div>`+[()=>upH0()+autoRow(),qH,acH,pgH][u]()}
+function xtick(){const now=Date.now();qroll();
+ if(S.ev&&S.ev.e<now){S.ev=null;S.evn=now+24e4+Math.random()*24e4;EVR=1}
+ else if(!S.ev&&now>=(S.evn||(S.evn=now+6e4))){const k=Math.random()*EVK.length|0;S.ev={k,p:Math.random()*20|0,e:now+3e5};EVR=1;toast(EVK[k][0]+"!");beep(740,.3)}
+ if(S.auto)S.plots.forEach((pl,i)=>{adv(pl,now);if(kind(pl)=="r"){hv(i);EVR=1}});
+ AC.forEach((a,i)=>{if(!S.ach[i]&&a[3]()){S.ach[i]=1;const r=Math.max(300,Math.round(S.m*.05));S.m+=r;toast("🏆 "+a[1]+" · +💰"+fmt(r));beep(660,.4);save()}});
+ if(EVR&&!$("ov").classList.contains("on")){EVR=0;if(tab==0||tab==2||tab==4)render()}}
 setInterval(tick,400);render();setInterval(pull,6000);pull();
 if(away)toast("С возвращением! Созрело: "+away+" 🌾");
 </script></body></html>
