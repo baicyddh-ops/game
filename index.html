@@ -207,15 +207,15 @@ PL.forEach((p,i)=>p[4]=Math.round(p[2]*(1.25-i*.004)));
 // ---- состояние ----
 const S0=()=>({m:60,cards:{},s:{0:4},sel:0,fe:3,h:{},dup:{},ct:0,plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,nw:[],esc:{},mc:{}});let K="sadchudes5",tab=0,SG="",sv=0;let S=S0();
 try{["sadchudes2","sadchudes3","sadchudes4"].forEach(k=>localStorage.removeItem(k));const x=localStorage.getItem(K);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
-// v12: полный сброс прогресса один раз + 2 бесплатных пака
-if(S.rs!=3){const kp={};["code","nick","uid","dms","seen","clr","ntf"].forEach(x=>{if(S[x]!==undefined)kp[x]=S[x]});S=Object.assign(S0(),kp);S.rs=3;S.fp=2;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+// v14: ПОСЛЕДНИЙ полный сброс (RSV=4). Больше версию НЕ повышать — иначе у всех игроков снова всё обнулится.
+if((S.rs|0)<4){const kp={};["code","nick","uid","dms","seen","clr","ntf"].forEach(x=>{if(S[x]!==undefined)kp[x]=S[x]});S=Object.assign(S0(),kp);S.rs=4;S.fp=2;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 if(!S.ach)S.ach={};["auto","dsc","nt","nd","c","q","dl","an","it","fd","fk","mp","sh","od","to","tg","tc","bl","sc","nb","vn","ft","gt","sw","fv","lg"].forEach(k=>delete S[k]);S.xp|=0;S.pg|=0;S.tot|=0;if(!S.achv){S.achv=1;const n={};for(const k in S.ach){const i=+k;if(i==10||i==17)continue;n[i-(i>10)-(i>17)]=1}S.ach=n}if(!S.tr)S.tr={};if(!S.qd)S.qd={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
 if(!S.mk||!S.mk.x||S.mk.x.length!=PL.length)S.mk={t:Date.now(),x:PL.map(()=>1)};
 if(S.mv!=3){S.plots.forEach(pl=>{if(pl.p!=null)pl.m=pl.m>=0?1<<pl.m:0});const nh={};for(const k in S.h){const a=k.split(".").map(Number);a[2]=a[2]>=0?1<<a[2]:0;const nk=a.join(".");nh[nk]=(nh[nk]||0)+S.h[k]}S.h=nh;S.mv=3}
 S.plots=S.plots.map(pl=>pl.p==null?{p:null}:{p:pl.p,g:pl.g||0,f:pl.f?1:0,m:pl.m|0,l:pl.l||Date.now()});
 function ensureSel(){if(S.sel!=null&&S.s[S.sel]>0)return;const k=PL.findIndex((_,i)=>S.s[i]>0);S.sel=k<0?null:k}ensureSel();
 if(!S.v){for(const n in S.cards){const l=S.cards[n];S.cards[n]=1;if(l>1)S.dup[n]=(S.dup[n]||0)+l-1}S.v=2}
-const save=()=>{if(window.NOSV)return;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}},$=i=>document.getElementById(i);
+const save=()=>{if(window.NOSV)return;try{const o=JSON.parse(localStorage.getItem(K)||"null");if(o&&(o.rs|0)>(S.rs|0))return;localStorage.setItem(K,JSON.stringify(S))}catch(e){}},$=i=>document.getElementById(i);
 const fmt=n=>{n=Math.floor(n);if(n<10000)return n.toLocaleString("ru");for(const[v,s]of[[1e12,"трлн"],[1e9,"млрд"],[1e6,"млн"],[1e3,"тыс"]])if(n>=v){const q=n/v;return(q<100?q.toFixed(1).replace(/\.0$/,""):Math.floor(q)+"").replace(".",",")+" "+s}};
 const dur=s=>s>=60?(s/60|0)+"м"+(s%60?" "+s%60+"с":""):s+"с";
 const rar=n=>RG.findIndex(g=>n<=g[1]);
