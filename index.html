@@ -202,9 +202,11 @@ const isP=n=>{if(n<2)return 0;for(let d=2;d*d<=n;d++)if(n%d==0)return 0;return 1
 function fact(n){const q=Math.sqrt(n);if(n==100)return"Целая сотня — вершина сада";if(isP(n))return"Простое: делится лишь на 1 и на себя";if(q%1==0)return`Квадрат: ${q} × ${q}`;if([8,13,21,34,55,89].includes(n))return"Число Фибоначчи — спираль природы";if([6,10,15,28,45,66,78,91].includes(n))return"Треугольное число";if(n%11==0)return"Зеркальное число";return"Кратно "+[2,3,5,7].find(d=>n%d==0)}
 PL.forEach((p,i)=>p[4]=Math.round(p[2]*(1.25-i*.004)));
 // ---- состояние ----
-let S={m:60,cards:{},s:{0:4},sel:0,fe:3,h:{},dup:{},ct:0,plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,nw:[],esc:{},mc:{}},K="sadchudes5",tab=0,SG="",sv=0;
+const S0=()=>({m:60,cards:{},s:{0:4},sel:0,fe:3,h:{},dup:{},ct:0,plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,nw:[],esc:{},mc:{}});let K="sadchudes5",tab=0,SG="",sv=0;let S=S0();
 try{["sadchudes2","sadchudes3","sadchudes4"].forEach(k=>localStorage.removeItem(k));const x=localStorage.getItem(K);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
-if(!S.ach)S.ach={};["auto","dsc","nt","nd","c","qc","q","qd","dl","an","it","fd","fk","mp","sh","od","to","tg","tc","bl","sc","nb","vn","ft","gt","sw","fv","lg"].forEach(k=>delete S[k]);S.xp|=0;S.pg|=0;S.tot|=0;if(!S.achv){S.achv=1;const n={};for(const k in S.ach){const i=+k;if(i==10||i==17)continue;n[i-(i>10)-(i>17)]=1}S.ach=n}if(!S.tr)S.tr={};if(!S.qd)S.qd={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
+// v12: полный сброс прогресса один раз + 2 бесплатных пака
+if(S.rs!=1){const kp={};["code","nick","uid","dms","seen","clr","ntf"].forEach(x=>{if(S[x]!==undefined)kp[x]=S[x]});S=Object.assign(S0(),kp);S.rs=1;S.fp=2;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+if(!S.ach)S.ach={};["auto","dsc","nt","nd","c","q","dl","an","it","fd","fk","mp","sh","od","to","tg","tc","bl","sc","nb","vn","ft","gt","sw","fv","lg"].forEach(k=>delete S[k]);S.xp|=0;S.pg|=0;S.tot|=0;if(!S.achv){S.achv=1;const n={};for(const k in S.ach){const i=+k;if(i==10||i==17)continue;n[i-(i>10)-(i>17)]=1}S.ach=n}if(!S.tr)S.tr={};if(!S.qd)S.qd={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
 if(!S.mk||!S.mk.x||S.mk.x.length!=PL.length)S.mk={t:Date.now(),x:PL.map(()=>1)};
 if(S.mv!=3){S.plots.forEach(pl=>{if(pl.p!=null)pl.m=pl.m>=0?1<<pl.m:0});const nh={};for(const k in S.h){const a=k.split(".").map(Number);a[2]=a[2]>=0?1<<a[2]:0;const nk=a.join(".");nh[nk]=(nh[nk]||0)+S.h[k]}S.h=nh;S.mv=3}
 S.plots=S.plots.map(pl=>pl.p==null?{p:null}:{p:pl.p,g:pl.g||0,f:pl.f?1:0,m:pl.m|0,l:pl.l||Date.now()});
@@ -237,8 +239,8 @@ function roll(w){let r=Math.random()*100,k=0;for(let i=0;i<7;i++){r-=w[i];if(r<0
 function give(n){if(!S.cards[n]){S.cards[n]=1;return"NEW"}S.dup[n]=(S.dup[n]||0)+1;return"DUP"}
 function openOv(h,c){$("sheet").className="sheet "+(c||"");$("sheet").innerHTML=h;$("ov").classList.add("on")}
 function closeOv(s){$("ov").classList.remove("on");if(!s)render()}
-function buyPack(){const k=PACK;if(S.m<k.c)return;S.m-=k.c;qp("pk",1);const nb2=[],res=[0,0,0].map(()=>{const n=roll(k.w),t=give(n);if(t=="NEW"&&!nb2.includes(n))nb2.push(n);return C(n,S.cards[n],tagH(t))});if(nb2.length)S.nw=nb2;save();vib(30);
- openOv(`<h2 style="margin-top:0;text-align:center;color:var(--text)">${k.e} ${k.n} — листай →</h2><div class="pk">${res.join("")}</div><div class="r2g"><button class="btn g" ${S.m<k.c?"disabled":""} onclick="closeOv();buyPack()">Ещё · 💰${fmt(k.c)}</button><button class="btn" onclick="closeOv()">Забрать!</button></div>`);
+function buyPack(){const k=PACK,fr=S.fp>0;if(!fr&&S.m<k.c)return;if(fr)S.fp--;else S.m-=k.c;qp("pk",1);const nb2=[],res=[0,0,0].map(()=>{const n=roll(k.w),t=give(n);if(t=="NEW"&&!nb2.includes(n))nb2.push(n);return C(n,S.cards[n],tagH(t))});if(nb2.length)S.nw=nb2;save();vib(30);
+ openOv(`<h2 style="margin-top:0;text-align:center;color:var(--text)">${k.e} ${k.n} — листай →</h2><div class="pk">${res.join("")}</div><div class="r2g"><button class="btn g" ${S.m<k.c&&!(S.fp>0)?"disabled":""} onclick="closeOv();buyPack()">Ещё · ${S.fp>0?"🎁 Бесплатно ("+S.fp+")":"💰"+fmt(k.c)}</button><button class="btn" onclick="closeOv()">Забрать!</button></div>`);
  document.querySelectorAll(".pk .card").forEach((c,j)=>c.style.animationDelay=j*.5+"s")}
 function zoom(n){openOv(`<div class="zoom">${C(n,1)}</div><p class="tip">${S.dup[n]?"Дубликатов в папке: "+S.dup[n]:"Карточка для коллекции"}</p><button class="btn wide" onclick="closeOv()">Закрыть</button>`,"zoom")}
 // ---- сад ----
@@ -267,7 +269,7 @@ function sell(k,all){const n=S.h[k]||0;if(!n)return;const[p,f,m]=k.split(".").ma
 function shopH(){const b=(l,c,f)=>`<button class="btn s" ${S.m<c?"disabled":""} onclick="${f}">${l} 💰${fmt(c)}</button>`;
  let h="";
  h+=`<h2>Удобрение</h2><div class="box"><div class="big">🧪</div><div class="t"><b>Удобрение · есть ${S.fe}</b><small>Рост ×2, урожай +15%, шанс мутации ×3</small></div><div class="btns">${b("×1",PR.fe,"buy(1)")}${b("×10",PR.fe*10,"buy(10)")}${b("×50",PR.fe*50,"buy(50)")}</div></div>`;
- h+=`<h2>Пак карточек</h2><div class="box"><div class="big">${PACK.e}</div><div class="t"><b>${PACK.n}</b><small>3 числа из 100 — от обычных до божественных</small></div>${b("",PACK.c,"buyPack()")}</div>`;
+ h+=`<h2>Пак карточек</h2><div class="box"><div class="big">${PACK.e}</div><div class="t"><b>${PACK.n}</b><small>3 числа из 100 — от обычных до божественных</small></div>${S.fp>0?`<button class="btn g s" onclick="buyPack()">🎁 Бесплатно<br><small>осталось ${S.fp}</small></button>`:b("",PACK.c,"buyPack()")}</div>`;
  return h+"<h2>Семена растений</h2>"+PL.map((p,i)=>`<div class="box"><div class="big">${p[0]}</div><div class="t"><b>${p[1]}${S.s[i]>0?" · есть "+S.s[i]:""}</b><small>⏱${dur(p[3])} · продажа 💰${fmt(p[4]*S.mk.x[i])} ${S.mk.x[i]>=1.05?"▲":S.mk.x[i]<=.95?"▼":""}</small></div><div class="btns">${lvl()<ulv(i)?`<small>🔒 Ур. ${ulv(i)}</small>`:b("×1",sc(i),`bs(${i},1)`)+b("×10",sc(i)*10,`bs(${i},10)`)}</div></div>`).join("")}
 function marketH(){const ks=Object.keys(S.h).filter(k=>S.h[k]>0).sort((a,c)=>+a.split(".")[0]-+c.split(".")[0]);let tot=0,cnt=0;
  const items=ks.map(k=>{const[p,f,m]=k.split(".").map(Number),n=S.h[k],v=val(p,f,m),P=PL[p],mc=m?MUT[mtop(m)][4]:"#8fd19e",mu=mm(m).map(x=>`<span class="bd2" style="background:${MUT[x][4]}">${MUT[x][1]} ${MUT[x][0]}</span>`).join("");tot+=v*n;cnt+=n;const x=S.mk.x[p],tr=x>=1.05?`<span class="tr up">▲ +${Math.round((x-1)*100)}%</span>`:x<=.95?`<span class="tr dn">▼ −${Math.round((1-x)*100)}%</span>`:`<span class="tr">≈ норма</span>`;
