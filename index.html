@@ -171,6 +171,9 @@ nav .nb{top:1px;right:4%;font-size:9px;padding:0 4px;min-width:14px;text-align:c
 .qb .qbar{height:10px;margin:5px 0 2px;background:#d9c39a;border-radius:6px;overflow:hidden}.qb .qbar i{display:block;height:100%;background:linear-gradient(#8de06a,#3fae2a);transition:width .4s}
 .fxbtn{white-space:nowrap;position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 36px);transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;font:900 17px system-ui;color:#4a2e12;background:linear-gradient(#ffe27a,#ffd54a);border:3px solid #b86a1a;border-radius:16px;padding:12px 28px;box-shadow:0 5px 0 #8a5412}
 .fxo.ready .fxbtn{opacity:1;transform:translateX(-50%);pointer-events:auto;transition:.4s cubic-bezier(.2,1.5,.4,1);animation:qpulse 1.2s .4s ease-in-out infinite}
+.qty{display:flex;align-items:center;justify-content:center;gap:10px}.qty .btn{width:48px;height:48px;font-size:22px;padding:0}
+.qty input{width:140px;height:48px;text-align:center;font:900 24px system-ui;color:#4a2e12;background:#fff;border:3px solid #c8955a;border-radius:12px}
+.qq{display:flex;gap:8px;justify-content:center;margin-top:10px}.qq .btn{flex:1}
 /* v10: чат */
 .btn.rd{border-color:#9c1f1f;background:linear-gradient(#ff8a8a,#e04848);color:#fff}
 .chh{display:flex;gap:6px;margin-bottom:8px}.chh .btn{flex:1;padding:8px 4px;font-size:12px}
@@ -216,9 +219,9 @@ const save=()=>{if(window.NOSV)return;try{localStorage.setItem(K,JSON.stringify(
 const fmt=n=>{n=Math.floor(n);if(n<10000)return n.toLocaleString("ru");for(const[v,s]of[[1e12,"трлн"],[1e9,"млрд"],[1e6,"млн"],[1e3,"тыс"]])if(n>=v){const q=n/v;return(q<100?q.toFixed(1).replace(/\.0$/,""):Math.floor(q)+"").replace(".",",")+" "+s}};
 const dur=s=>s>=60?(s/60|0)+"м"+(s%60?" "+s%60+"с":""):s+"с";
 const rar=n=>RG.findIndex(g=>n<=g[1]);
-const tm=i=>PL[i][3]*1000,rate=pl=>(1+.1*S.spd)*evm("grow")*(pl.f?2:1);
+const tm=i=>PL[i][3]*1000,rate=pl=>(1+.1*S.spd)*(1+.1*(S.pg|0))*evm("grow")*(pl.f?2:1);
 const mm=m=>MUT.map((_,k)=>k).filter(k=>m>>k&1),mmul=m=>mm(m).reduce((a,k)=>a*MUT[k][2],1),mtop=m=>31-Math.clz32(m);
-const val=(i,f,m)=>PL[i][4]*S.mk.x[i]*(1+.05*S.prc)*(1+.25*S.pg)*evm("price")*evm("one",i)*(f?1.15:1)*(m?mmul(m):1);
+const val=(i,f,m)=>PL[i][4]*S.mk.x[i]*(1+.05*S.prc)*evm("price")*evm("one",i)*(f?1.15:1)*(m?mmul(m):1);
 const sc=i=>Math.max(1,Math.round(PL[i][2]*evm("sale")));
 const upc=(b,l)=>Math.round(b*Math.pow(1.7,l)),plotCost=()=>Math.round(150*Math.pow(2.3,S.plots.length-2));
 const luck=f=>(1+.1*S.lck)*evm("luck")*(f?3:1);
@@ -239,10 +242,10 @@ function roll(w){let r=Math.random()*100,k=0;for(let i=0;i<7;i++){r-=w[i];if(r<0
 function give(n){if(!S.cards[n]){S.cards[n]=1;return"NEW"}S.dup[n]=(S.dup[n]||0)+1;return"DUP"}
 function openOv(h,c){$("sheet").className="sheet "+(c||"");$("sheet").innerHTML=h;$("ov").classList.add("on")}
 function closeOv(s){$("ov").classList.remove("on");if(!s)render()}
-function buyPack(){const k=PACK,fr=S.fp>0;if(!fr&&S.m<k.c)return;if(fr)S.fp--;else S.m-=k.c;qp("pk",1);const nb2=[],res=[0,0,0].map(()=>{const n=roll(k.w),t=give(n);if(t=="NEW"&&!nb2.includes(n))nb2.push(n);return C(n,S.cards[n],tagH(t))});if(nb2.length)S.nw=nb2;save();vib(30);
+function buyPack(){const k=PACK,fr=S.fp>0;if(!fr&&S.m<k.c)return;if(fr)S.fp--;else S.m-=k.c;qp("pk",1);const nb2=[],res=[0,0,0].map(()=>{const n=roll(k.w),t=give(n);if(t=="NEW"&&!nb2.includes(n))nb2.push(n);return C(n,S.cards[n],tagH(t))});if(nb2.length)S.nw=[...new Set([...(S.nw||[]),...nb2])];save();vib(30);
  openOv(`<h2 style="margin-top:0;text-align:center;color:var(--text)">${k.e} ${k.n} — листай →</h2><div class="pk">${res.join("")}</div><div class="r2g"><button class="btn g" ${S.m<k.c&&!(S.fp>0)?"disabled":""} onclick="closeOv();buyPack()">Ещё · ${S.fp>0?"🎁 Бесплатно ("+S.fp+")":"💰"+fmt(k.c)}</button><button class="btn" onclick="closeOv()">Забрать!</button></div>`);
  document.querySelectorAll(".pk .card").forEach((c,j)=>c.style.animationDelay=j*.5+"s")}
-function zoom(n){openOv(`<div class="zoom">${C(n,1)}</div><p class="tip">${S.dup[n]?"Дубликатов в папке: "+S.dup[n]:"Карточка для коллекции"}</p><button class="btn wide" onclick="closeOv()">Закрыть</button>`,"zoom")}
+function zoom(n){if((S.nw||[]).includes(n)){S.nw=S.nw.filter(x=>x!=n);save()}openOv(`<div class="zoom">${C(n,1)}</div><p class="tip">${S.dup[n]?"Дубликатов в папке: "+S.dup[n]:"Карточка для коллекции"}</p><button class="btn wide" onclick="closeOv()">Закрыть</button>`,"zoom")}
 // ---- сад ----
 function plotH(pl,i){const k=kind(pl);
  if(k=="e")return`<div class="plot" onclick="pc(${i})"><div class="e" style="font-size:30px">➕</div>Посадить<br><b style="font-size:16px">${S.sel!=null?PL[S.sel][0]:""}</b></div>`;
@@ -268,9 +271,9 @@ function sell(k,all){const n=S.h[k]||0;if(!n)return;const[p,f,m]=k.split(".").ma
 // ---- магазин ----
 function shopH(){const b=(l,c,f)=>`<button class="btn s" ${S.m<c?"disabled":""} onclick="${f}">${l} 💰${fmt(c)}</button>`;
  let h="";
- h+=`<h2>Удобрение</h2><div class="box"><div class="big">🧪</div><div class="t"><b>Удобрение · есть ${S.fe}</b><small>Рост ×2, урожай +15%, шанс мутации ×3</small></div><div class="btns">${b("×1",PR.fe,"buy(1)")}${b("×10",PR.fe*10,"buy(10)")}${b("×50",PR.fe*50,"buy(50)")}</div></div>`;
+ h+=`<h2>Удобрение</h2><div class="box"><div class="big">🧪</div><div class="t"><b>Удобрение · есть ${S.fe}</b><small>Рост ×2, урожай +15%, шанс мутации ×3</small></div><div class="btns">${b("×1",PR.fe,"buy(1)")}<button class="btn s" ${S.m<PR.fe?"disabled":""} onclick="buyDlg('f')">🔢 Выбрать</button></div></div>`;
  h+=`<h2>Пак карточек</h2><div class="box"><div class="big">${PACK.e}</div><div class="t"><b>${PACK.n}</b><small>3 числа из 100 — от обычных до божественных</small></div>${S.fp>0?`<button class="btn g s" onclick="buyPack()">🎁 Бесплатно<br><small>осталось ${S.fp}</small></button>`:b("",PACK.c,"buyPack()")}</div>`;
- return h+"<h2>Семена растений</h2>"+PL.map((p,i)=>`<div class="box"><div class="big">${p[0]}</div><div class="t"><b>${p[1]}${S.s[i]>0?" · есть "+S.s[i]:""}</b><small>⏱${dur(p[3])} · продажа 💰${fmt(p[4]*S.mk.x[i])} ${S.mk.x[i]>=1.05?"▲":S.mk.x[i]<=.95?"▼":""}</small></div><div class="btns">${lvl()<ulv(i)?`<small>🔒 Ур. ${ulv(i)}</small>`:b("×1",sc(i),`bs(${i},1)`)+b("×10",sc(i)*10,`bs(${i},10)`)}</div></div>`).join("")}
+ return h+"<h2>Семена растений</h2>"+PL.map((p,i)=>`<div class="box"><div class="big">${p[0]}</div><div class="t"><b>${p[1]}${S.s[i]>0?" · есть "+S.s[i]:""}</b><small>⏱${dur(p[3])} · продажа 💰${fmt(p[4]*S.mk.x[i])} ${S.mk.x[i]>=1.05?"▲":S.mk.x[i]<=.95?"▼":""}</small></div><div class="btns">${lvl()<ulv(i)?`<small>🔒 Ур. ${ulv(i)}</small>`:b("×1",sc(i),`bs(${i},1)`)+`<button class="btn s" ${S.m<sc(i)?"disabled":""} onclick="buyDlg('s',${i})">🔢 Выбрать</button>`}</div></div>`).join("")}
 function marketH(){const ks=Object.keys(S.h).filter(k=>S.h[k]>0).sort((a,c)=>+a.split(".")[0]-+c.split(".")[0]);let tot=0,cnt=0;
  const items=ks.map(k=>{const[p,f,m]=k.split(".").map(Number),n=S.h[k],v=val(p,f,m),P=PL[p],mc=m?MUT[mtop(m)][4]:"#8fd19e",mu=mm(m).map(x=>`<span class="bd2" style="background:${MUT[x][4]}">${MUT[x][1]} ${MUT[x][0]}</span>`).join("");tot+=v*n;cnt+=n;const x=S.mk.x[p],tr=x>=1.05?`<span class="tr up">▲ +${Math.round((x-1)*100)}%</span>`:x<=.95?`<span class="tr dn">▼ −${Math.round((1-x)*100)}%</span>`:`<span class="tr">≈ норма</span>`;
   return`<div class="it" style="--mc:${mc}"><span class="cnt">×${n}</span>${f?'<span class="fz2">🧪</span>':""}<div class="em">${P[0]}</div><b>${P[1]}</b>${mu}<div class="pr">💰${fmt(v)}<small> за шт</small>${tr}</div>${n>1?`<button class="btn g s" onclick="sell('${k}',0)">Продать 1</button><button class="btn s" onclick="sell('${k}',1)">Все · 💰${fmt(v*n)}</button>`:`<button class="btn g s" onclick="sell('${k}',0)">Продать</button>`}</div>`}).join("");
@@ -282,7 +285,7 @@ function colH(){const dn=Object.keys(S.dup).filter(n=>S.dup[n]>0),dt=dn.reduce((
  tabs=`<div class="chips"><button class="chip ${S.ct?"":"on"}" onclick="S.ct=0;render()">🃏 Коллекция ${Object.keys(S.cards).length}/100</button><button class="chip ${S.ct?"on":""}" onclick="S.ct=1;render()">📁 Дубликаты ${dt}</button></div>`;
  if(S.ct)return tabs+(dn.length?`<div class="cards">`+dn.map(n=>`<div style="position:relative" onclick="zoom(${n})"><span class="new" style="background:#2f8cf5">×${S.dup[n]}</span>${C(+n,1)}</div>`).join("")+"</div>":`<p class="tip">Папка пуста. Когда выпадет карточка, которая у тебя уже есть, она попадёт сюда.</p>`);
  let h=tabs+`<p class="tip" style="margin:0 0 4px">Карточки нужны только для коллекции. Нажми на карточку, чтобы рассмотреть её.</p>`;
- RG.forEach((g,i)=>{const l=[];for(let n=g[0];n<=g[1];n++)l.push(n);h+=`<h2 class="r${i}">${R[i]} · №${g[0]}${g[1]>g[0]?"–"+g[1]:""} · ${l.filter(n=>S.cards[n]).length}/${l.length}</h2><div class="cards">`+l.map(n=>S.cards[n]?`<div onclick="zoom(${n})">${C(n,1,S.nw.includes(n)?tagH("NEW"):"")}</div>`:C(n,0)).join("")+"</div>"});return h}
+ RG.forEach((g,i)=>{const l=[];for(let n=g[0];n<=g[1];n++)l.push(n);h+=`<h2 class="r${i}">${R[i]} · №${g[0]}${g[1]>g[0]?"–"+g[1]:""} · ${l.filter(n=>S.cards[n]).length}/${l.length}</h2><div class="cards">`+l.map(n=>S.cards[n]?`<div onclick="zoom(${n})">${C(n,1,(S.nw||[]).includes(n)?tagH("NEW"):"")}</div>`:C(n,0)).join("")+"</div>"});return h}
 function upH0(){const a=upc(100,S.spd),b=upc(250,S.prc),d=upc(400,S.lck),y=upc(300,S.yld),c=plotCost(),row=(em,t,s,cost,fn,max)=>`<div class="box"><div class="big">${em}</div><div class="t"><b>${t}</b><small>${s}</small></div><button class="btn g s" ${max||S.m<cost?"disabled":""} onclick="${fn}">${max?"MAX":"💰"+fmt(cost)}</button></div>`;
  return"<h2>Улучшения</h2>"+row("⚡","Теплица · ур. "+S.spd+"/20","Рост быстрее на 10% за уровень (сейчас +"+S.spd*10+"%)",a,`up('spd',${a})`,S.spd>=20)+row("💎","Золотая лейка · ур. "+S.prc+"/20","Цена урожая +5% за уровень (сейчас +"+S.prc*5+"%)",b,`up('prc',${b})`,S.prc>=20)+row("🍀","Удача · ур. "+S.lck+"/25","Шанс мутаций +10% за уровень (сейчас +"+S.lck*10+"%)",d,`up('lck',${d})`,S.lck>=25)+row("🧺","Урожайность · ур. "+S.yld+"/15","Шанс удвоить урожай +4% за уровень (сейчас "+S.yld*4+"%)",y,`up('yld',${y})`,S.yld>=15)+row("🪴","Новая грядка · "+S.plots.length+"/12","Больше растений одновременно",c,"newPlot()",S.plots.length>=12)}
 const UM={spd:20,prc:20,lck:25,yld:15};
@@ -321,7 +324,7 @@ async function settleT(){const ids=new Set(TL.map(o=>o.id));
  for(const id of Object.keys(S.esc)){if(!ids.has(id)){const n=S.esc[id];S.dup[n]=(S.dup[n]||0)+1;delete S.esc[id];save();toast("Обмен закрыт, карточка вернулась")}}
  for(const o of TL){try{const me=o.a==S.code?"a":"b",ot=me=="a"?"b":"a",mine=me=="a"?o.ca:o.cb;
   if(o.st=="on"&&me=="a"&&!S.tr["a"+o.id]){S.tr["a"+o.id]=1;save();toast("Игрок согласился на обмен! Открой его во вкладке «Обмен»")}
-  if(lk(o)&&(o.st=="on"||o.st=="x")){if(!o["r"+me]){if(!S.tr[o.id]){if(S.esc[o.id]!=mine)continue;const n=me=="a"?o.cb:o.ca,t=give(n);if(t=="NEW")S.nw=[n];delete S.esc[o.id];S.tr[o.id]=1;save();toast("Обмен завершён! Получена №"+n+(t=="NEW"?" 🆕":""))}await api("trades/"+o.id,"PATCH",{["r"+me]:true});if(o["r"+ot])await api("trades/"+o.id,"DELETE")}else if(o["r"+ot])await api("trades/"+o.id,"DELETE");continue}
+  if(lk(o)&&(o.st=="on"||o.st=="x")){if(!o["r"+me]){if(!S.tr[o.id]){if(S.esc[o.id]!=mine)continue;const n=me=="a"?o.cb:o.ca,t=give(n);if(t=="NEW")S.nw=[...new Set([...(S.nw||[]),n])];delete S.esc[o.id];S.tr[o.id]=1;save();toast("Обмен завершён! Получена №"+n+(t=="NEW"?" 🆕":""))}await api("trades/"+o.id,"PATCH",{["r"+me]:true});if(o["r"+ot])await api("trades/"+o.id,"DELETE")}else if(o["r"+ot])await api("trades/"+o.id,"DELETE");continue}
   if(o.st=="no"){if(me=="a"){toast("Игрок отказался от обмена");await api("trades/"+o.id,"DELETE")}continue}
   if(o.st=="x"){const n=S.esc[o.id];if(n){S.dup[n]=(S.dup[n]||0)+1;delete S.esc[o.id];save();toast("Обмен отменён, карточка вернулась")}if(!o["x"+me])await api("trades/"+o.id,"PATCH",{["x"+me]:true});if(o["x"+ot])await api("trades/"+o.id,"DELETE")}
  }catch(e){}}}
@@ -411,8 +414,10 @@ function beep(f,d){d=d||.15;try{AX=AX||new(window.AudioContext||window.webkitAud
 const AC=[["🌾","Первый урожай","Собери 1 урожай",()=>S.tot>=1],["🧺","Фермер","Собери 100 урожаев",()=>S.tot>=100],["🚜","Агроном","Собери 1000 урожаев",()=>S.tot>=1000],["🃏","Коллекционер","Собери 25 карточек",()=>Object.keys(S.cards).length>=25],["📚","Архивариус","Собери все 100 карточек",()=>Object.keys(S.cards).length>=100],["🧬","Мутант!","Получи любую мутацию",()=>Object.keys(S.mc).length>=1],["🌌","Все мутации","Найди все 5 мутаций",()=>Object.keys(S.mc).length>=5],["🪴","Большой сад","Открой 8 грядок",()=>S.plots.length>=8],["💰","Миллионер","Накопи 💰1 млн",()=>S.m>=1e6],["🏦","Миллиардер","Накопи 💰1 млрд",()=>S.m>=1e9],["♻️","Новая жизнь","Сделай перерождение",()=>S.pg>=1],["🌿","Огородник","Собери 500 урожаев",()=>S.tot>=500],["🧬","Охотник за мутациями","Найди 3 вида мутаций",()=>Object.keys(S.mc).length>=3],["🃏","Любитель карточек","Собери 50 карточек",()=>Object.keys(S.cards).length>=50],["🪴","Огромный сад","Открой все 12 грядок",()=>S.plots.length>=12],["💎","Триллионер","Накопи 💰1 трлн",()=>S.m>=1e12],["♻️","Опытный","Сделай 3 перерождения",()=>S.pg>=3]];
 const acH=()=>{const n=Object.keys(S.ach).length;return`<h2>🏆 Достижения ${n}/${AC.length}</h2><div class="lvb"><div><i style="width:${Math.round(n/AC.length*100)}%"></i></div><small>${n}/${AC.length}</small></div>`+AC.map((a,i)=>S.ach[i]?`<div class="box ad"><div class="big">${a[0]}</div><div class="t"><b>${a[1]}</b><small>${a[2]}</small></div><span class="dn2">✅<small>Выполнено</small></span></div>`:`<div class="box al"><div class="big">🔒</div><div class="t"><b>${a[1]}</b><small>${a[2]}</small></div></div>`).join("")};
 const pgNeed=()=>Math.round(1e6*Math.pow(4,S.pg|0));
-function pgH(){const n=pgNeed(),ok=S.m>=n;return`<h2>♻️ Перерождение</h2><div class="box"><div class="big">♻️</div><div class="t"><b>Перерождений: ${S.pg|0}</b><small>Сейчас цена урожая +${25*(S.pg|0)}%. Сбросятся деньги, семена, грядки и улучшения. Останутся карточки и достижения. Каждое перерождение даёт ещё +25% к цене навсегда.</small></div></div><button class="btn g wide" ${ok?"":"disabled"} onclick="rebirth()">${ok?"Переродиться":"Нужно 💰"+fmt(n)}</button>`}
-function rebirth(){if(S.m<pgNeed()||!confirm("Сбросить прогресс ради бонуса +25% к цене навсегда?"))return;S.pg=(S.pg|0)+1;Object.assign(S,{m:60,s:{0:4},sel:0,fe:3,h:{},plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0});S.mk={t:Date.now(),x:PL.map(()=>1)};ensureSel();beep(300,.6);save();render()}
+function pgH(){const n=pgNeed(),ok=S.m>=n;return`<h2>♻️ Перерождение</h2><div class="box"><div class="big">♻️</div><div class="t"><b>Перерождений: ${S.pg|0}</b><small>Сейчас: рост растений +${10*(S.pg|0)}%, опыт +${20*(S.pg|0)}%. Сбросится всё: деньги, опыт и уровень, семена, грядки, улучшения, квесты, достижения и склад. Останутся только карточки (с дубликатами и обменами) и данные чата. Каждое перерождение навсегда даёт +10% к скорости роста растений и +20% к опыту.</small></div></div><button class="btn g wide" ${ok?"":"disabled"} onclick="rebirth()">${ok?"Переродиться":"Нужно 💰"+fmt(n)}</button>`}
+function rebirth(){if(S.m<pgNeed()||!confirm("Сбросить ВСЁ (деньги, уровень, квесты, достижения, улучшения, урожай) ради бонуса навсегда: +10% к скорости роста и +20% к опыту?\nОстанутся только карточки и данные чата."))return;
+ const keep=["cards","dup","nw","tr","esc","code","nick","uid","dms","seen","clr","ntf","rs","fp","v","mv","achv","ut","ct"],kp={},pg=(S.pg|0)+1;keep.forEach(k=>{if(S[k]!==undefined)kp[k]=S[k]});
+ S=Object.assign(S0(),kp);S.pg=pg;S.xp=0;S.tot=0;S.ach={};S.qd={};S.mc={};S.mk={t:Date.now(),x:PL.map(()=>1)};ensureSel();beep(300,.6);save();render()}
 function upH(){const u=Math.min(S.ut|0,2),tb=[["⬆️","Улучшения"],["🏆","Награды"],["♻️","Перерождение"]].map((x,i)=>`<button class="chip ${u==i?"on":""}" onclick="S.ut=${i};render()"><b>${x[0]}</b>${x[1]}</button>`).join("");return`<div class="chips tb">${tb}</div>`+[()=>upH0(),acH,pgH][u]()}
 function xtick(){const now=Date.now();fixC();
  if(S.ev&&S.ev.e<now){S.ev=null;S.evn=now+24e4+Math.random()*24e4;EVR=1}
@@ -422,7 +427,7 @@ function xtick(){const now=Date.now();fixC();
 // ---- v3: опыт, квесты, NPC, ферма, любые карточки ----
 function fixC(){for(const n in S.dup){if(S.dup[n]>0&&!S.cards[n]){S.cards[n]=1;S.dup[n]--}if(!(S.dup[n]>0))delete S.dup[n]}}
 const lvl=()=>Math.floor(Math.sqrt((S.xp|0)/120))+1;
-function xpg(n){const o=lvl();S.xp=(S.xp|0)+n;const l=lvl();for(let x=o+1;x<=l;x++){const r=Math.max(40,Math.round(S.m*.01));S.m+=r;S.fe+=1;fxPush(lvFx(x,r),3000);beep(880,.4);setTimeout(()=>beep(1175,.4),200)}}
+function xpg(n){n=Math.round(n*(1+.2*(S.pg|0)));const o=lvl();S.xp=(S.xp|0)+n;const l=lvl();for(let x=o+1;x<=l;x++){const r=Math.max(40,Math.round(S.m*.01));S.m+=r;S.fe+=1;fxPush(lvFx(x,r),3000);beep(880,.4);setTimeout(()=>beep(1175,.4),200)}}
 // ---- v11: квесты (постоянные) ----
 const QL=[];(()=>{const A=(e,t,k,gs,xs,f)=>gs.forEach((g,i)=>QL.push({id:k+g,e,t:f?f(g):t+" "+fmt(g),k,g,x:xs[i]}));
 A("🧺","Собери урожай","h",[30,150,500,1500,5000,15000],[20,60,150,400,1000,2500]);
@@ -445,6 +450,15 @@ function qOpen(){const o=document.querySelector("#sheet .qsc"),st=o?o.scrollTop:
  openOv(`<h2 style="margin:0 0 4px;text-align:center;color:#4a2e12;background:none;border:0;box-shadow:none;white-space:normal">📜 Квесты</h2><p class="hp" style="text-align:center;margin:0 0 10px">Выполняй задания и получай опыт ⭐ и монеты 💰</p><div class="qsc">`+L.map(({q,d})=>{const v=Math.min(q.g,qv(q));return`<div class="box qb ${d==2?"ad":""}"><div class="big">${d==2?"✅":q.e}</div><div class="t"><b>${q.t}</b><div class="qbar"><i style="width:${v/q.g*100}%"></i></div><small>${q.k=="mo"?"":v+"/"+q.g+" · "}⭐${q.x} · 💰${fmt(qco(q))}</small></div>${d==2?"":`<button class="btn s ${d==0?"g":""}" ${d==0?"":"disabled"} onclick="qClaim('${q.id}')">Забрать</button>`}</div>`}).join("")+`</div><button class="btn wide" onclick="closeOv(1)">Закрыть</button>`);const n=document.querySelector("#sheet .qsc");if(n)n.scrollTop=st}
 const qco=q=>Math.max(20,Math.round(q.x*.4));
 function qClaim(id){const q=QL.find(z=>z.id==id);if(!q||S.qd[id]||!qdn(q))return;S.qd[id]=1;S.m+=qco(q);xpg(q.x);beep(880,.2);save();$("mon").textContent="💰 "+fmt(S.m);qOpen();render();$("ov").classList.add("on")}
+// ---- v13: покупка выбранного количества ----
+let BD=null;
+function buyDlg(k,i){const p=k=="f"?PR.fe:sc(i),em=k=="f"?"🧪":PL[i][0],nm=k=="f"?"Удобрение":PL[i][1];BD={k,i,p};
+ openOv(`<h2 style="margin:0 0 4px;text-align:center;color:#4a2e12;background:none;border:0;box-shadow:none;white-space:normal">${em} ${nm}</h2><p class="hp" style="text-align:center;margin:0 0 10px">Цена за штуку: 💰${fmt(p)}<br>Хватит на: <b id="bdm"></b> шт</p><div class="qty"><button class="btn s" onclick="bdAdd(-1)">−</button><input id="bdn" type="number" inputmode="numeric" min="1" value="1" oninput="bdUpd()"><button class="btn s" onclick="bdAdd(1)">+</button></div><div class="qq"><button class="btn s" onclick="bdAdd(10)">+10</button><button class="btn s" onclick="bdAdd(100)">+100</button><button class="btn s g" onclick="bdMax()">Макс</button></div><p id="bdt" class="hp" style="text-align:center;font-weight:800;margin:10px 0"></p><button id="bdb" class="btn g wide" onclick="bdBuy()">Купить</button><button class="btn wide" onclick="closeOv(1)">Отмена</button>`);bdUpd()}
+const bdMx=()=>Math.floor(S.m/BD.p),bdN=()=>{const v=Math.floor(+$("bdn").value);return v>0?v:0};
+function bdUpd(){const n=bdN(),c=n*BD.p,ok=n>0&&c<=S.m;$("bdm").textContent=fmt(bdMx());$("bdt").innerHTML=n?`Итого: 💰${fmt(c)}${ok?"":' <span style="color:#c0392b">— не хватает монет</span>'}`:"Введи количество";$("bdb").disabled=!ok;$("bdb").textContent=ok?"Купить ×"+fmt(n):"Купить"}
+function bdAdd(d){$("bdn").value=Math.max(1,bdN()+d);bdUpd()}
+function bdMax(){$("bdn").value=Math.max(1,bdMx());bdUpd()}
+function bdBuy(){const n=bdN(),{k,i,p}=BD;if(!n||n*p>S.m)return;closeOv(1);if(k=="f")buy(n);else bs(i,n);toast("Куплено: "+(k=="f"?"🧪":PL[i][0])+" ×"+fmt(n))}
 // ---- v9: стиль и правила как в Hay Day ----
 const ulv=i=>1+Math.floor(i*.5);
 const lvH=()=>{const L=lvl(),a=120*(L-1)*(L-1),b=120*L*L,p=Math.max(0,Math.min(100,Math.round(((S.xp|0)-a)/(b-a)*100)));return`<div class="lvb"><span>⭐ Ур. ${L}</span><div><i style="width:${p}%"></i></div><small>${S.xp|0}/${b}</small></div>`};
