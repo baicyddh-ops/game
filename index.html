@@ -163,6 +163,14 @@ nav .nb{top:1px;right:4%;font-size:9px;padding:0 4px;min-width:14px;text-align:c
 .box.ad{border-color:#2f9e44;background:linear-gradient(135deg,#e7ffd8,#fff3d6);box-shadow:0 3px 0 #2f7d1e}
 .box.al{opacity:.55;filter:grayscale(.5)}
 .dn2{text-align:center;font-size:24px;font-weight:800;color:#2f7d1e}.dn2 small{display:block;font-size:10px;margin:0;color:#2f7d1e}
+/* v11: квесты */
+.qbtn{position:relative;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;padding:10px 14px;font:800 15px system-ui;color:#4a2e12;background:linear-gradient(#fff8e4,#ffe9b8);border:3px solid #c8955a;border-radius:14px;box-shadow:0 3px 0 #a8743c}
+.qbtn.rdy{border-color:#2f9e44;animation:qpulse 1.2s ease-in-out infinite}
+@keyframes qpulse{50%{box-shadow:0 0 0 4px #7cfc9a88,0 3px 0 #2f7d1e}}
+.qbtn i{position:absolute;top:-8px;right:-4px;background:#ff4d6d;color:#fff;font:800 11px system-ui;border-radius:10px;padding:2px 7px;font-style:normal}
+.qb .qbar{height:10px;margin:5px 0 2px;background:#d9c39a;border-radius:6px;overflow:hidden}.qb .qbar i{display:block;height:100%;background:linear-gradient(#8de06a,#3fae2a);transition:width .4s}
+.fxbtn{white-space:nowrap;position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 36px);transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;font:900 17px system-ui;color:#4a2e12;background:linear-gradient(#ffe27a,#ffd54a);border:3px solid #b86a1a;border-radius:16px;padding:12px 28px;box-shadow:0 5px 0 #8a5412}
+.fxo.ready .fxbtn{opacity:1;transform:translateX(-50%);pointer-events:auto;transition:.4s cubic-bezier(.2,1.5,.4,1);animation:qpulse 1.2s .4s ease-in-out infinite}
 /* v10: чат */
 .btn.rd{border-color:#9c1f1f;background:linear-gradient(#ff8a8a,#e04848);color:#fff}
 .chh{display:flex;gap:6px;margin-bottom:8px}.chh .btn{flex:1;padding:8px 4px;font-size:12px}
@@ -196,7 +204,7 @@ PL.forEach((p,i)=>p[4]=Math.round(p[2]*(1.25-i*.004)));
 // ---- состояние ----
 let S={m:60,cards:{},s:{0:4},sel:0,fe:3,h:{},dup:{},ct:0,plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,nw:[],esc:{},mc:{}},K="sadchudes5",tab=0,SG="",sv=0;
 try{["sadchudes2","sadchudes3","sadchudes4"].forEach(k=>localStorage.removeItem(k));const x=localStorage.getItem(K);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
-if(!S.ach)S.ach={};["auto","dsc","nt","nd","c","qc","q","qd","dl","an","it","fd","fk","mp","sh","od","to","tg","tc","bl","sc","nb","vn","ft","gt","sw","fv","lg"].forEach(k=>delete S[k]);S.xp|=0;S.pg|=0;S.tot|=0;if(!S.achv){S.achv=1;const n={};for(const k in S.ach){const i=+k;if(i==10||i==17)continue;n[i-(i>10)-(i>17)]=1}S.ach=n}if(!S.tr)S.tr={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
+if(!S.ach)S.ach={};["auto","dsc","nt","nd","c","qc","q","qd","dl","an","it","fd","fk","mp","sh","od","to","tg","tc","bl","sc","nb","vn","ft","gt","sw","fv","lg"].forEach(k=>delete S[k]);S.xp|=0;S.pg|=0;S.tot|=0;if(!S.achv){S.achv=1;const n={};for(const k in S.ach){const i=+k;if(i==10||i==17)continue;n[i-(i>10)-(i>17)]=1}S.ach=n}if(!S.tr)S.tr={};if(!S.qd)S.qd={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
 if(!S.mk||!S.mk.x||S.mk.x.length!=PL.length)S.mk={t:Date.now(),x:PL.map(()=>1)};
 if(S.mv!=3){S.plots.forEach(pl=>{if(pl.p!=null)pl.m=pl.m>=0?1<<pl.m:0});const nh={};for(const k in S.h){const a=k.split(".").map(Number);a[2]=a[2]>=0?1<<a[2]:0;const nk=a.join(".");nh[nk]=(nh[nk]||0)+S.h[k]}S.h=nh;S.mv=3}
 S.plots=S.plots.map(pl=>pl.p==null?{p:null}:{p:pl.p,g:pl.g||0,f:pl.f?1:0,m:pl.m|0,l:pl.l||Date.now()});
@@ -229,7 +237,7 @@ function roll(w){let r=Math.random()*100,k=0;for(let i=0;i<7;i++){r-=w[i];if(r<0
 function give(n){if(!S.cards[n]){S.cards[n]=1;return"NEW"}S.dup[n]=(S.dup[n]||0)+1;return"DUP"}
 function openOv(h,c){$("sheet").className="sheet "+(c||"");$("sheet").innerHTML=h;$("ov").classList.add("on")}
 function closeOv(s){$("ov").classList.remove("on");if(!s)render()}
-function buyPack(){const k=PACK;if(S.m<k.c)return;S.m-=k.c;const nb2=[],res=[0,0,0].map(()=>{const n=roll(k.w),t=give(n);if(t=="NEW"&&!nb2.includes(n))nb2.push(n);return C(n,S.cards[n],tagH(t))});if(nb2.length)S.nw=nb2;save();vib(30);
+function buyPack(){const k=PACK;if(S.m<k.c)return;S.m-=k.c;qp("pk",1);const nb2=[],res=[0,0,0].map(()=>{const n=roll(k.w),t=give(n);if(t=="NEW"&&!nb2.includes(n))nb2.push(n);return C(n,S.cards[n],tagH(t))});if(nb2.length)S.nw=nb2;save();vib(30);
  openOv(`<h2 style="margin-top:0;text-align:center;color:var(--text)">${k.e} ${k.n} — листай →</h2><div class="pk">${res.join("")}</div><div class="r2g"><button class="btn g" ${S.m<k.c?"disabled":""} onclick="closeOv();buyPack()">Ещё · 💰${fmt(k.c)}</button><button class="btn" onclick="closeOv()">Забрать!</button></div>`);
  document.querySelectorAll(".pk .card").forEach((c,j)=>c.style.animationDelay=j*.5+"s")}
 function zoom(n){openOv(`<div class="zoom">${C(n,1)}</div><p class="tip">${S.dup[n]?"Дубликатов в папке: "+S.dup[n]:"Карточка для коллекции"}</p><button class="btn wide" onclick="closeOv()">Закрыть</button>`,"zoom")}
@@ -242,19 +250,19 @@ function plotH(pl,i){const k=kind(pl);
  return`<div class="plot g${mc}" ${st} onclick="pc(${i})">${bd}${fz}<div class="e" id="e${i}" style="font-size:${esz(pl,pr)}px">${pr<.35?"🌱":p[0]}</div><span id="t${i}"></span><div class="bar"><i id="b${i}"></i></div></div>`}
 function gardenH(){SG=sg();
  const seeds=PL.map((p,i)=>S.s[i]>0?`<button class="chip ${S.sel==i?"on":""}" onclick="sel(${i})">${p[0]}<small>×${S.s[i]}</small></button>`:"").join("");
- return`<h2 style="margin-top:0">🎒 Инвентарь</h2><div class="chips sd" id="chips">${seeds}<span class="chip ${S.fe>0?"":"dim"}">🧪<small>×${S.fe}</small></span></div>${seeds?"":'<p class="tip">Семян нет — купи их в магазине 🛒</p>'}
+ return qBtn()+`<h2 style="margin-top:0">🎒 Инвентарь</h2><div class="chips sd" id="chips">${seeds}<span class="chip ${S.fe>0?"":"dim"}">🧪<small>×${S.fe}</small></span></div>${seeds?"":'<p class="tip">Семян нет — купи их в магазине 🛒</p>'}
 <div class="grid">${S.plots.map(plotH).join("")}</div>`}
 function sel(i){S.sel=i;save();render()}
 function pc(i){const pl=S.plots[i],k=kind(pl);if(k=="r")harv(i);else if(k=="d")fz(i);else if(plant(i)){save();render()}else toast("Нет семян — купи в магазине 🛒")}
-function plant(i){ensureSel();const id=S.sel;if(id==null)return 0;S.s[id]--;S.plots[i]={p:id,g:0,f:0,m:rollMut(luck(0),0),l:Date.now()};ensureSel();return 1}
+function plant(i){ensureSel();const id=S.sel;if(id==null)return 0;S.s[id]--;S.plots[i]={p:id,g:0,f:0,m:rollMut(luck(0),0),l:Date.now()};ensureSel();xpg(2);qp("p",1);return 1}
 function fz(i){const pl=S.plots[i];if(pl.p==null||kind(pl)=="r")return 0;if(pl.f){toast("Уже удобрено 🧪");return 0}
  if(S.fe<1){toast("Нет удобрения — купи в магазине 🧪");return 0}
- adv(pl,Date.now());S.fe--;pl.f=1;pl.m=rollMut(luck(1),pl.m|0);fx(i,"🧪 ×2","#7cfc9a");vib(15);save();render();return 1}
-function hv(i){const pl=S.plots[i],m=pl.m|0,k=pl.p+"."+(pl.f?1:0)+"."+m,q=Math.random()<.04*S.yld+evm("yield")-1?2:1;S.h[k]=(S.h[k]||0)+q;S.tot=(S.tot|0)+q;xpg(q*(1+(pl.p>>2)));if(m)mm(m).forEach(x=>S.mc[x]=(S.mc[x]||0)+1);fx(i,"+"+PL[pl.p][0]+(q>1?"×2":""),m?MUT[mtop(m)][4]:"#ffd54a");S.plots[i]={p:null};return[q,m]}
+ adv(pl,Date.now());S.fe--;pl.f=1;pl.m=rollMut(luck(1),pl.m|0);fx(i,"🧪 ×2","#7cfc9a");xpg(3);qp("f",1);vib(15);save();render();return 1}
+function hv(i){const pl=S.plots[i],m=pl.m|0,k=pl.p+"."+(pl.f?1:0)+"."+m,q=Math.random()<.04*S.yld+evm("yield")-1?2:1;S.h[k]=(S.h[k]||0)+q;S.tot=(S.tot|0)+q;xpg(q*(1+(pl.p>>2))*5);qp("h",q,pl.p);if(m)qp("m",1);if(m)mm(m).forEach(x=>S.mc[x]=(S.mc[x]||0)+1);fx(i,"+"+PL[pl.p][0]+(q>1?"×2":""),m?MUT[mtop(m)][4]:"#ffd54a");S.plots[i]={p:null};return[q,m]}
 const mtxt=m=>m?" · "+mm(m).map(k=>MUT[k][1]+" "+MUT[k][0]).join(" + ")+"!":"";
 function harv(i){const p=PL[S.plots[i].p],[q,m]=hv(i);toast("Собрано: "+p[0]+" "+p[1]+(q>1?" ×2 🧺":"")+mtxt(m));vib(m?[20,40,20]:15);save();render()}
-function sellAll(){let tot=0,n=0;for(const k of Object.keys(S.h)){const q=S.h[k];if(!(q>0))continue;const[p,f,m]=k.split(".").map(Number);tot+=val(p,f,m)*q;n+=q;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));delete S.h[k]}if(!n)return;S.m+=tot;toast("Продано: "+n+" шт · 💰"+fmt(tot));vib(25);save();render()}
-function sell(k,all){const n=S.h[k]||0;if(!n)return;const[p,f,m]=k.split(".").map(Number),q=all?n:1,v=val(p,f,m)*q;S.h[k]=n-q;if(S.h[k]<=0)delete S.h[k];S.m+=v;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));toast("Продано: "+PL[p][0]+" ×"+q+" · 💰"+fmt(v));vib(15);save();render()}
+function sellAll(){let tot=0,n=0;for(const k of Object.keys(S.h)){const q=S.h[k];if(!(q>0))continue;const[p,f,m]=k.split(".").map(Number);tot+=val(p,f,m)*q;n+=q;S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));delete S.h[k]}if(!n)return;S.m+=tot;xpg(n);qp("s",n);toast("Продано: "+n+" шт · 💰"+fmt(tot));vib(25);save();render()}
+function sell(k,all){const n=S.h[k]||0;if(!n)return;const[p,f,m]=k.split(".").map(Number),q=all?n:1,v=val(p,f,m)*q;S.h[k]=n-q;if(S.h[k]<=0)delete S.h[k];S.m+=v;xpg(q);qp("s",q);S.mk.x[p]=Math.max(.45,S.mk.x[p]*Math.pow(.985,q));toast("Продано: "+PL[p][0]+" ×"+q+" · 💰"+fmt(v));vib(15);save();render()}
 // ---- магазин ----
 function shopH(){const b=(l,c,f)=>`<button class="btn s" ${S.m<c?"disabled":""} onclick="${f}">${l} 💰${fmt(c)}</button>`;
  let h="";
@@ -386,10 +394,10 @@ function banner(c,e){NM[c]=e.nm||NM[c]||"Игрок";let b=$("tbn");if(!b){b=doc
 async function ibPoll(){if(!FBU||!S.code||!DB||tab==6)return;try{const o=ur();IB=(await api("inbox/"+S.code))||{};checkNew();if(ur()!=o&&!$("ov").classList.contains("on")){const a=document.activeElement;if(!(a&&a.tagName=="INPUT"))render()}}catch(e){}}
 // ---- анимации уровня и достижений ----
 const conf=n=>Array.from({length:n},()=>`<i class="cfi" style="left:${(Math.random()*100).toFixed(1)}%;--d:${(Math.random()*1.2).toFixed(2)}s;--t:${(2+Math.random()*1.6).toFixed(2)}s;--x:${Math.round((Math.random()-.5)*180)}px;--c:${["#ffd54a","#ff7ad9","#6fe3ff","#7cfc9a","#ff6b6b","#fff"][Math.random()*6|0]}"></i>`).join("");
-const lvFx=(l,r)=>`<div class="fxr"></div>${conf(40)}<div class="lvc"><div class="lvs">⭐</div><div class="lvt">НОВЫЙ УРОВЕНЬ!</div><div class="lvn">${l}</div><div class="lvr">+💰${fmt(r)} · +🧪1</div><small>Нажми, чтобы продолжить</small></div>`;
+const lvFx=(l,r)=>`<div class="fxr"></div>${conf(40)}<div class="lvc"><div class="lvs">⭐</div><div class="lvt">НОВЫЙ УРОВЕНЬ!</div><div class="lvn">${l}</div><div class="lvr">+💰${fmt(r)} · +🧪1</div></div>`;
 const acFx=(a,r)=>`<div class="fxr"></div>${conf(28)}<div class="acc"><div class="act">🏆 ДОСТИЖЕНИЕ ВЫПОЛНЕНО</div><div class="aci">${a[0]}</div><div class="acn">${a[1]}</div><div class="acd">${a[2]}</div><div class="lvr">✅ Награда: +💰${fmt(r)}</div></div>`;
 function fxPush(h,ms){FXQ.push([h,ms]);if(!FXB)fxNext()}
-function fxNext(){const it=FXQ.shift();if(!it){FXB=0;return}FXB=1;const d=document.createElement("div");d.className="fxo";d.innerHTML=it[0];document.body.appendChild(d);let z=0;const end=()=>{if(z)return;z=1;d.classList.add("out");setTimeout(()=>{d.remove();fxNext()},350)};d.onclick=end;setTimeout(end,it[1])}
+function fxNext(){const it=FXQ.shift();if(!it){FXB=0;return}FXB=1;const d=document.createElement("div");d.className="fxo";d.style.cursor="default";d.innerHTML=it[0]+'<button class="fxbtn">Продолжить ▶</button>';document.body.appendChild(d);let z=0,ready=0;const end=()=>{if(z||!ready)return;z=1;d.classList.add("out");setTimeout(()=>{d.remove();fxNext()},350)};d.onclick=end;setTimeout(()=>{ready=1;d.classList.add("ready");d.style.cursor="pointer"},it[1])}
 setInterval(()=>{if(tab==5&&TO&&DB)pull()},2000);
 
 // ---- v2: события, задания, достижения, перерождение, звук ----
@@ -407,12 +415,34 @@ function upH(){const u=Math.min(S.ut|0,2),tb=[["⬆️","Улучшения"],["
 function xtick(){const now=Date.now();fixC();
  if(S.ev&&S.ev.e<now){S.ev=null;S.evn=now+24e4+Math.random()*24e4;EVR=1}
  else if(!S.ev&&now>=(S.evn||(S.evn=now+6e4))){const k=Math.random()*EVK.length|0;S.ev={k,p:Math.random()*20|0,e:now+3e5};EVR=1;toast(EVK[k][0]+"!");beep(740,.3)}
- AC.forEach((a,i)=>{if(!S.ach[i]&&a[3]()){S.ach[i]=1;const r=Math.max(300,Math.round(S.m*.05));S.m+=r;fxPush(acFx(a,r),3400);beep(660,.4);setTimeout(()=>beep(990,.4),180);save()}});
+ AC.forEach((a,i)=>{if(!S.ach[i]&&a[3]()){S.ach[i]=1;const r=Math.max(300,Math.round(S.m*.05));S.m+=r;fxPush(acFx(a,r),2600);beep(660,.4);setTimeout(()=>beep(990,.4),180);save()}});
  if(EVR&&!$("ov").classList.contains("on")){EVR=0;if(tab==0||tab==2||tab==4)render()}}
 // ---- v3: опыт, квесты, NPC, ферма, любые карточки ----
 function fixC(){for(const n in S.dup){if(S.dup[n]>0&&!S.cards[n]){S.cards[n]=1;S.dup[n]--}if(!(S.dup[n]>0))delete S.dup[n]}}
 const lvl=()=>Math.floor(Math.sqrt((S.xp|0)/30))+1;
-function xpg(n){const o=lvl();S.xp=(S.xp|0)+n;const l=lvl();for(let x=o+1;x<=l;x++){const r=Math.max(200,Math.round(S.m*.05));S.m+=r;S.fe+=1;fxPush(lvFx(x,r),3800);beep(880,.4);setTimeout(()=>beep(1175,.4),200)}}
+function xpg(n){const o=lvl();S.xp=(S.xp|0)+n;const l=lvl();for(let x=o+1;x<=l;x++){const r=Math.max(200,Math.round(S.m*.05));S.m+=r;S.fe+=1;fxPush(lvFx(x,r),3000);beep(880,.4);setTimeout(()=>beep(1175,.4),200)}}
+// ---- v11: квесты (постоянные) ----
+const QL=[];(()=>{const A=(e,t,k,gs,xs,f)=>gs.forEach((g,i)=>QL.push({id:k+g,e,t:f?f(g):t+" "+fmt(g),k,g,x:xs[i]}));
+A("🧺","Собери урожай","h",[10,50,150,500,1500,5000],[40,120,300,800,2000,5000]);
+A("🌱","Посади растения","p",[10,40,120,400,1200],[30,90,250,700,1800]);
+A("💰","Продай урожай","s",[20,100,300,1000,3000],[40,150,400,1100,3000]);
+A("🧪","Удобри растения","f",[3,15,50,150],[40,150,450,1200]);
+A("✨","Собери мутантов","m",[1,5,20,60],[60,250,800,2200]);
+A("🃏","Открой паки карточек","pk",[1,5,20,60],[50,200,700,2000]);
+A("⭐","Достигни уровня","lv",[3,5,8,12,16,20,30],[60,150,350,800,1600,3000,7000],g=>"Достигни "+g+" уровня");
+A("🏆","Получи достижения","ac",[3,8,15,25],[80,300,900,2500],g=>"Получи достижений: "+g);
+A("🏦","Накопи монет","mo",[1000,50000,5000000,500000000],[60,300,1500,6000],g=>"Накопи 💰"+fmt(g));
+for(let i=0;i<12;i++)QL.push({id:"hp"+i,e:PL[i][0],t:"Вырасти "+PL[i][1]+" ×25",k:"hp"+i,g:25,x:60+i*40})})();
+const qc=()=>S.qc||(S.qc={h:S.tot|0,p:0,s:0,f:0,m:0,pk:0,hp:{}});
+function qv(q){const c=qc();if(q.k=="lv")return lvl();if(q.k=="ac")return Object.keys(S.ach||{}).length;if(q.k=="mo")return Math.floor(S.m);if(q.k.slice(0,2)=="hp")return c.hp[q.k.slice(2)]|0;return c[q.k]|0}
+const qdn=q=>qv(q)>=q.g;
+function qp(t,n,pi){const c=qc(),was=QL.filter(q=>!S.qd[q.id]&&qdn(q)).length;c[t]=(c[t]|0)+n;if(pi!=null)c.hp[pi]=(c.hp[pi]|0)+n;const now=QL.filter(q=>!S.qd[q.id]&&qdn(q));if(now.length>was){toast("📜 Квест выполнен! Забери награду во вкладке «Сад»");beep(700,.2)}}
+const qRd=()=>QL.filter(q=>!S.qd[q.id]&&qdn(q)).length;
+function qBtn(){const r=qRd(),d=QL.filter(q=>S.qd[q.id]).length;return`<button class="qbtn ${r?"rdy":""}" onclick="qOpen()"><span>📜 Квесты</span><b>${d}/${QL.length}</b>${r?`<i>${r}</i>`:""}</button>`}
+function qOpen(){const o=document.querySelector("#sheet .qsc"),st=o?o.scrollTop:0,L=QL.map(q=>({q,d:S.qd[q.id]?2:qdn(q)?0:1})).sort((a,b)=>a.d-b.d||(a.d==1?Math.min(1,qv(b.q)/b.q.g)-Math.min(1,qv(a.q)/a.q.g):0));
+ openOv(`<h2 style="margin:0 0 4px;text-align:center;color:#4a2e12;background:none;border:0;box-shadow:none;white-space:normal">📜 Квесты</h2><p class="hp" style="text-align:center;margin:0 0 10px">Выполняй задания и получай опыт ⭐ и монеты 💰</p><div class="qsc">`+L.map(({q,d})=>{const v=Math.min(q.g,qv(q));return`<div class="box qb ${d==2?"ad":""}"><div class="big">${d==2?"✅":q.e}</div><div class="t"><b>${q.t}</b><div class="qbar"><i style="width:${v/q.g*100}%"></i></div><small>${q.k=="mo"?"":v+"/"+q.g+" · "}⭐${q.x} · 💰${fmt(qco(q))}</small></div>${d==2?"":`<button class="btn s ${d==0?"g":""}" ${d==0?"":"disabled"} onclick="qClaim('${q.id}')">Забрать</button>`}</div>`}).join("")+`</div><button class="btn wide" onclick="closeOv(1)">Закрыть</button>`);const n=document.querySelector("#sheet .qsc");if(n)n.scrollTop=st}
+const qco=q=>Math.max(100,Math.round(S.m*.01*Math.min(5,1+q.x/500)));
+function qClaim(id){const q=QL.find(z=>z.id==id);if(!q||S.qd[id]||!qdn(q))return;S.qd[id]=1;S.m+=qco(q);xpg(q.x);beep(880,.2);save();$("mon").textContent="💰 "+fmt(S.m);qOpen();render();$("ov").classList.add("on")}
 // ---- v9: стиль и правила как в Hay Day ----
 const ulv=i=>1+Math.floor(i*.5);
 const lvH=()=>{const L=lvl(),a=30*(L-1)*(L-1),b=30*L*L,p=Math.max(0,Math.min(100,Math.round(((S.xp|0)-a)/(b-a)*100)));return`<div class="lvb"><span>⭐ Ур. ${L}</span><div><i style="width:${p}%"></i></div><small>${S.xp|0}/${b}</small></div>`};
