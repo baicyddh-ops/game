@@ -208,7 +208,7 @@ PL.forEach((p,i)=>p[4]=Math.round(p[2]*(1.25-i*.004)));
 const S0=()=>({m:60,cards:{},s:{0:4},sel:0,fe:3,h:{},dup:{},ct:0,plots:[{p:null},{p:null}],spd:0,prc:0,lck:0,yld:0,nw:[],esc:{},mc:{}});let K="sadchudes5",tab=0,SG="",sv=0;let S=S0();
 try{["sadchudes2","sadchudes3","sadchudes4"].forEach(k=>localStorage.removeItem(k));const x=localStorage.getItem(K);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
 // v12: полный сброс прогресса один раз + 2 бесплатных пака
-if(S.rs!=2){const kp={};["code","nick","uid","dms","seen","clr","ntf"].forEach(x=>{if(S[x]!==undefined)kp[x]=S[x]});S=Object.assign(S0(),kp);S.rs=2;S.fp=2;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+if(S.rs!=3){const kp={};["code","nick","uid","dms","seen","clr","ntf"].forEach(x=>{if(S[x]!==undefined)kp[x]=S[x]});S=Object.assign(S0(),kp);S.rs=3;S.fp=2;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 if(!S.ach)S.ach={};["auto","dsc","nt","nd","c","q","dl","an","it","fd","fk","mp","sh","od","to","tg","tc","bl","sc","nb","vn","ft","gt","sw","fv","lg"].forEach(k=>delete S[k]);S.xp|=0;S.pg|=0;S.tot|=0;if(!S.achv){S.achv=1;const n={};for(const k in S.ach){const i=+k;if(i==10||i==17)continue;n[i-(i>10)-(i>17)]=1}S.ach=n}if(!S.tr)S.tr={};if(!S.qd)S.qd={};if(!S.dms)S.dms={};if(!S.seen)S.seen={};
 if(!S.mk||!S.mk.x||S.mk.x.length!=PL.length)S.mk={t:Date.now(),x:PL.map(()=>1)};
 if(S.mv!=3){S.plots.forEach(pl=>{if(pl.p!=null)pl.m=pl.m>=0?1<<pl.m:0});const nh={};for(const k in S.h){const a=k.split(".").map(Number);a[2]=a[2]>=0?1<<a[2]:0;const nk=a.join(".");nh[nk]=(nh[nk]||0)+S.h[k]}S.h=nh;S.mv=3}
